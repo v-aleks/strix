@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      },
+      "results": [
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Open redirect on /logout\n\nDescription of Open redirect on /logout."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "5a243fe7fb14aab852a4d92ca9a9fca948dc0c56d1f82853495a6bb9848d585f"
+          },
+          "properties": {
+            "security-severity": "3.0",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-601",
+              "id": "vuln-0001",
+              "impact": "Impact of Open redirect on /logout.",
+              "poc": {
+                "description": "Proof of concept for Open redirect on /logout.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Open redirect on /logout by validating input.",
+              "severity": "low",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Open redirect on /logout.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "d5a0a71b8944723e6b5716f77ea81aafadc8af9cf952fc35253e51aecad5ffec",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-601",
+          "ruleIndex": 0
+        },
+        {
+          "kind": "pass",
+          "level": "none",
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "password_reset"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "authn — Ruled out: password_reset\n\nReset tokens are single use and expire in 15 minutes."
+          },
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "recorded_by": "Root Agent",
+              "risk_area": "authn",
+              "source": "agent_reported",
+              "surface": "password_reset"
+            }
+          },
+          "ruleId": "strix-coverage/authn",
+          "ruleIndex": 1
+        },
+        {
+          "kind": "open",
+          "level": "none",
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "file_upload"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "path_traversal — Requires further review: file_upload\n\nUpload path sanitization needs a second look."
+          },
+          "properties": {
+            "strix": {
+              "coverage_outcome": "needs_follow_up",
+              "recorded_by": "Root Agent",
+              "risk_area": "path_traversal",
+              "source": "agent_reported",
+              "surface": "file_upload"
+            }
+          },
+          "ruleId": "strix-coverage/path-traversal",
+          "ruleIndex": 2
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "fullDescription": {
+                "text": "Description of Open redirect on /logout."
+              },
+              "help": {
+                "markdown": "Description of Open redirect on /logout.\n\nImpact of Open redirect on /logout.\n\nRemediate Open redirect on /logout by validating input.",
+                "text": "Description of Open redirect on /logout.\n\nImpact of Open redirect on /logout.\n\nRemediate Open redirect on /logout by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/601.html",
+              "id": "CWE-601",
+              "name": "Open redirect on /logout",
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "CWE-601",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Open redirect on /logout"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "fullDescription": {
+                "text": "Coverage of authn across the assessed attack surface."
+              },
+              "help": {
+                "markdown": "Coverage of authn across the assessed attack surface.",
+                "text": "Coverage of authn across the assessed attack surface."
+              },
+              "id": "strix-coverage/authn",
+              "name": "authn",
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              },
+              "shortDescription": {
+                "text": "Coverage: authn"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "fullDescription": {
+                "text": "Coverage of path_traversal across the assessed attack surface."
+              },
+              "help": {
+                "markdown": "Coverage of path_traversal across the assessed attack surface.",
+                "text": "Coverage of path_traversal across the assessed attack surface."
+              },
+              "id": "strix-coverage/path-traversal",
+              "name": "path_traversal",
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              },
+              "shortDescription": {
+                "text": "Coverage: path_traversal"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

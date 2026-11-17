@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      },
+      "results": [
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Reflected XSS via ``code`` marker\n\nDescription of Reflected XSS via ``code`` marker."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "b998c0266fcb2210493b56e45ade67dbff51c00d09db166a2b14cf2511a2e715"
+          },
+          "properties": {
+            "security-severity": "5.5",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-79",
+              "id": "vuln-0001",
+              "impact": "Impact of Reflected XSS via ``code`` marker.",
+              "poc": {
+                "description": "Proof of concept for Reflected XSS via ``code`` marker.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Reflected XSS via ``code`` marker by validating input.",
+              "severity": "medium",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Reflected XSS via ``code`` marker.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "841d192a59e6812ef6a771cf84fa82963f628884ed58037aa16b7e6cdd3695f8",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-79",
+          "ruleIndex": 0
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Description of Reflected XSS via ``code`` marker."
+              },
+              "help": {
+                "markdown": "Description of Reflected XSS via ``code`` marker.\n\nImpact of Reflected XSS via ``code`` marker.\n\nRemediate Reflected XSS via ``code`` marker by validating input.",
+                "text": "Description of Reflected XSS via ``code`` marker.\n\nImpact of Reflected XSS via ``code`` marker.\n\nRemediate Reflected XSS via ``code`` marker by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/79.html",
+              "id": "CWE-79",
+              "name": "Reflected XSS via ``code`` marker",
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "CWE-79",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Reflected XSS via ``code`` marker"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

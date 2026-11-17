@@ -1,0 +1,3 @@
+id,title,severity,timestamp,file
+vuln-0001,Broken object level authorization on /api/users/{id},HIGH,<TIMESTAMP>,vulnerabilities/vuln-0001.md
+vuln-0002,Missing rate limit on /api/login,LOW,<TIMESTAMP>,vulnerabilities/vuln-0002.md

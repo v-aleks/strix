@@ -1,0 +1,53 @@
+{
+  "completeness": {
+    "caveats": [],
+    "complete": true,
+    "exit_reason": null,
+    "scan_status": "completed"
+  },
+  "entries": [
+    {
+      "evidence": "The target exposes no GraphQL endpoint.",
+      "outcome": "not_applicable",
+      "outcome_label": "Not applicable",
+      "previous_outcomes": [],
+      "recorded_at": "<TIMESTAMP>",
+      "recorded_by": "Root Agent",
+      "risk_area": "injection",
+      "source": "agent_reported",
+      "surface": "graphql",
+      "updated_at": "<TIMESTAMP>"
+    }
+  ],
+  "gaps": [],
+  "generated_at": "<TIMESTAMP>",
+  "machine_observed": {
+    "agents": [],
+    "findings_filed": 0,
+    "skills_exercised": [],
+    "source": "runtime"
+  },
+  "run_id": "<RUN_ID>",
+  "run_name": "coverage-not-applicable",
+  "schema_version": 1,
+  "scope": {
+    "diff_scope": null,
+    "instruction": "",
+    "scan_mode": "quick",
+    "scope_mode": "auto",
+    "targets": [
+      {
+        "target": "https://example.test/app",
+        "type": "url"
+      }
+    ]
+  },
+  "summary": {
+    "findings_filed": 0,
+    "gaps": 0,
+    "outcomes": {
+      "not_applicable": 1
+    },
+    "surfaces_reviewed": 1
+  }
+}

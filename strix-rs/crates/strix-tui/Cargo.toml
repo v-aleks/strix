@@ -1,0 +1,19 @@
+[package]
+name = "strix-tui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Backend side of the TUI protocol (v3) spoken by the existing Go sidecar"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+strix-agent = { workspace = true }
+strix-report = { workspace = true }
+
+[lints]
+workspace = true

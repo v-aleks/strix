@@ -1,0 +1,283 @@
+{
+  "scenarios": [
+    {
+      "artifacts": [
+        "run.json",
+        "findings.sarif",
+        "coverage.json"
+      ],
+      "coverage_count": 0,
+      "description": "A clean scan still writes every artifact, including an empty SARIF.",
+      "finding_count": 0,
+      "name": "empty-scan"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "One critical finding with a CWE.",
+      "finding_count": 1,
+      "name": "single-critical"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "A finding anchored to a source location.",
+      "finding_count": 1,
+      "name": "single-high-with-code-location"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md",
+        "vulnerabilities/vuln-0002.md"
+      ],
+      "coverage_count": 0,
+      "description": "Two findings of the same class must not collapse into one.",
+      "finding_count": 2,
+      "name": "two-findings-same-cwe"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md",
+        "vulnerabilities/vuln-0002.md"
+      ],
+      "coverage_count": 0,
+      "description": "Endpoint-anchored findings carry method and route.",
+      "finding_count": 2,
+      "name": "endpoint-findings"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md",
+        "vulnerabilities/vuln-0002.md",
+        "vulnerabilities/vuln-0003.md",
+        "vulnerabilities/vuln-0004.md",
+        "vulnerabilities/vuln-0005.md"
+      ],
+      "coverage_count": 0,
+      "description": "Every severity level appears at least once.",
+      "finding_count": 5,
+      "name": "all-severities"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "A dependency finding with contextual metadata.",
+      "finding_count": 1,
+      "name": "dependency-cve"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "A CSV-formula-looking title must be escaped in the CSV index.",
+      "finding_count": 1,
+      "name": "title-with-formula-prefix"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "Backticks in a title must not break the markdown fence.",
+      "finding_count": 1,
+      "name": "title-with-backticks"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 1,
+      "description": "A scan that recorded one covered surface.",
+      "finding_count": 1,
+      "name": "coverage-reported"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "findings.sarif",
+        "coverage.json"
+      ],
+      "coverage_count": 1,
+      "description": "A surface that was reviewed and ruled out.",
+      "finding_count": 0,
+      "name": "coverage-ruled-out"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "findings.sarif",
+        "coverage.json"
+      ],
+      "coverage_count": 1,
+      "description": "A surface that does not apply to this target.",
+      "finding_count": 0,
+      "name": "coverage-not-applicable"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "findings.sarif",
+        "coverage.json"
+      ],
+      "coverage_count": 1,
+      "description": "A surface that needs more work.",
+      "finding_count": 0,
+      "name": "coverage-needs-follow-up"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "findings.sarif",
+        "coverage.json"
+      ],
+      "coverage_count": 1,
+      "description": "A surface with nothing to report.",
+      "finding_count": 0,
+      "name": "coverage-no-issue-found"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 3,
+      "description": "Several coverage entries with different outcomes.",
+      "finding_count": 1,
+      "name": "coverage-mixed"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "A code location that carries a proposed fix.",
+      "finding_count": 1,
+      "name": "code-locations-with-fix"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "One finding spanning two source files.",
+      "finding_count": 1,
+      "name": "multiple-code-locations"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "A finding with neither CWE nor source location.",
+      "finding_count": 1,
+      "name": "no-cwe-no-location"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md",
+        "vulnerabilities/vuln-0002.md",
+        "vulnerabilities/vuln-0003.md"
+      ],
+      "coverage_count": 0,
+      "description": "Dynamic and dependency findings in one run.",
+      "finding_count": 3,
+      "name": "mixed-classes"
+    },
+    {
+      "artifacts": [
+        "run.json",
+        "vulnerabilities.json",
+        "findings.sarif",
+        "coverage.json",
+        "vulnerabilities.csv",
+        "vulnerabilities/vuln-0001.md"
+      ],
+      "coverage_count": 0,
+      "description": "A long title must survive the markdown and CSV writers.",
+      "finding_count": 1,
+      "name": "long-title"
+    },
+    {
+      "name": "tool-schemas",
+      "tool_count": 43
+    }
+  ],
+  "schema_version": 1,
+  "source": "python:strix.report.state"
+}

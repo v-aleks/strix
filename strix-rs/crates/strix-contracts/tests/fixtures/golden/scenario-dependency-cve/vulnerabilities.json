@@ -1,0 +1,43 @@
+[
+  {
+    "assumptions": "The target is in scope.",
+    "confidence": "high",
+    "confidence_rationale": "Reproduced twice.",
+    "counterevidence": "No counterevidence was found.",
+    "cve": "CVE-2018-18074",
+    "cvss_breakdown": {
+      "A": "N",
+      "AC": "L",
+      "AV": "N",
+      "C": "H",
+      "I": "H",
+      "PR": "N",
+      "S": "U",
+      "UI": "N"
+    },
+    "cwe": "CWE-1395",
+    "dependency_metadata": {
+      "dependency_path": "app > requirements.txt > requests",
+      "fixed_version": "2.20.0",
+      "installed_version": "2.19.0",
+      "introduced_by": "app/api.py",
+      "package_ecosystem": "PyPI",
+      "package_name": "requests"
+    },
+    "description": "Description of Vulnerable dependency: requests 2.19.0.",
+    "evidence": "Observed evidence for Vulnerable dependency: requests 2.19.0.",
+    "finding_class": "dependency_cve",
+    "fix_effort": "medium",
+    "id": "vuln-0001",
+    "impact": "Impact of Vulnerable dependency: requests 2.19.0.",
+    "poc_description": "Proof of concept for Vulnerable dependency: requests 2.19.0.",
+    "poc_script_code": "```bash\ncurl https://example.test/app\n```",
+    "remediation_steps": "Remediate Vulnerable dependency: requests 2.19.0 by validating input.",
+    "severity": "high",
+    "severity_change_conditions": "Severity drops once the fix ships.",
+    "target": "https://example.test/app",
+    "technical_analysis": "Technical analysis of Vulnerable dependency: requests 2.19.0.",
+    "timestamp": "<TIMESTAMP>",
+    "title": "Vulnerable dependency: requests 2.19.0"
+  }
+]

@@ -1,0 +1,33 @@
+[
+  {
+    "assumptions": "The target is in scope.",
+    "confidence": "high",
+    "confidence_rationale": "Reproduced twice.",
+    "counterevidence": "No counterevidence was found.",
+    "cvss_breakdown": {
+      "A": "N",
+      "AC": "H",
+      "AV": "L",
+      "C": "N",
+      "I": "N",
+      "PR": "H",
+      "S": "U",
+      "UI": "R"
+    },
+    "description": "Description of Informational observation about headers.",
+    "evidence": "Observed evidence for Informational observation about headers.",
+    "finding_class": "dynamic",
+    "fix_effort": "medium",
+    "id": "vuln-0001",
+    "impact": "Impact of Informational observation about headers.",
+    "poc_description": "Proof of concept for Informational observation about headers.",
+    "poc_script_code": "```bash\ncurl https://example.test/app\n```",
+    "remediation_steps": "Remediate Informational observation about headers by validating input.",
+    "severity": "info",
+    "severity_change_conditions": "Severity drops once the fix ships.",
+    "target": "https://example.test/app",
+    "technical_analysis": "Technical analysis of Informational observation about headers.",
+    "timestamp": "<TIMESTAMP>",
+    "title": "Informational observation about headers"
+  }
+]

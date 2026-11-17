@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      },
+      "results": [
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail\n\nDescription of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail ."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "a903a916bf72f7a3e6fb77ac9f3cacfd48f985359b09172ad1c04b847f218824"
+          },
+          "properties": {
+            "security-severity": "5.5",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-400",
+              "id": "vuln-0001",
+              "impact": "Impact of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .",
+              "poc": {
+                "description": "Proof of concept for A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail  by validating input.",
+              "severity": "medium",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "50b2ff4542e85dd67bb811e5bd7b66bc455bb214c17f81a747b9ce991fb80306",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-400",
+          "ruleIndex": 0
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Description of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail ."
+              },
+              "help": {
+                "markdown": "Description of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .\n\nImpact of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .\n\nRemediate A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail  by validating input.",
+                "text": "Description of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .\n\nImpact of A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail .\n\nRemediate A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail  by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/400.html",
+              "id": "CWE-400",
+              "name": "A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail",
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "CWE-400",
+                  "stride:D"
+                ]
+              },
+              "shortDescription": {
+                "text": "A very long finding title describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail describing the impact in detail"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

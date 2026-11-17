@@ -1,0 +1,37 @@
+{
+  "auth_mode": "api_key",
+  "end_time": "<END_TIME>",
+  "llm_usage": {
+    "agents": [],
+    "cost": 0.0,
+    "input_tokens": 0,
+    "input_tokens_details": [
+      {
+        "cache_write_tokens": 0,
+        "cached_tokens": 0
+      }
+    ],
+    "output_tokens": 0,
+    "output_tokens_details": [
+      {
+        "reasoning_tokens": 0
+      }
+    ],
+    "providers": {},
+    "request_usage_entries": [],
+    "requests": 0,
+    "total_tokens": 0
+  },
+  "run_id": "<RUN_ID>",
+  "run_name": "multiple-code-locations",
+  "scan_mode": "quick",
+  "scope_mode": "auto",
+  "start_time": "<TIMESTAMP>",
+  "status": "completed",
+  "targets_info": [
+    {
+      "target": "https://example.test/app",
+      "type": "url"
+    }
+  ]
+}

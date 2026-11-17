@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "message": {
+                "text": "sink"
+              },
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "app/login.py"
+                },
+                "region": {
+                  "endLine": 44,
+                  "snippet": {
+                    "text": "cursor.execute(query % user_input)"
+                  },
+                  "startLine": 42
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "SQL injection in login\n\nDescription of SQL injection in login."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "3427599801f98fba0a7ddd1d53bd8953aea6b33957b1e5f43bdf2a8dcaa0bb8c"
+          },
+          "properties": {
+            "security-severity": "8.0",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-89",
+              "id": "vuln-0001",
+              "impact": "Impact of SQL injection in login.",
+              "poc": {
+                "description": "Proof of concept for SQL injection in login.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate SQL injection in login by validating input.",
+              "severity": "high",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of SQL injection in login.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "091274e2ad40f12c26f944cb00be2712c536b9e81137676e98311bc2ccf04d16"
+          },
+          "ruleId": "CWE-89",
+          "ruleIndex": 0
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Description of SQL injection in login."
+              },
+              "help": {
+                "markdown": "Description of SQL injection in login.\n\nImpact of SQL injection in login.\n\nRemediate SQL injection in login by validating input.",
+                "text": "Description of SQL injection in login.\n\nImpact of SQL injection in login.\n\nRemediate SQL injection in login by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/89.html",
+              "id": "CWE-89",
+              "name": "SQL injection in login",
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "CWE-89",
+                  "stride:T"
+                ]
+              },
+              "shortDescription": {
+                "text": "SQL injection in login"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "assumptions": "The target is in scope.",
+    "confidence": "high",
+    "confidence_rationale": "Reproduced twice.",
+    "counterevidence": "No counterevidence was found.",
+    "cvss_breakdown": {
+      "A": "N",
+      "AC": "L",
+      "AV": "N",
+      "C": "H",
+      "I": "N",
+      "PR": "L",
+      "S": "U",
+      "UI": "N"
+    },
+    "cwe": "CWE-79",
+    "description": "Description of Reflected XSS via ``code`` marker.",
+    "evidence": "Observed evidence for Reflected XSS via ``code`` marker.",
+    "finding_class": "dynamic",
+    "fix_effort": "medium",
+    "id": "vuln-0001",
+    "impact": "Impact of Reflected XSS via ``code`` marker.",
+    "poc_description": "Proof of concept for Reflected XSS via ``code`` marker.",
+    "poc_script_code": "```bash\ncurl https://example.test/app\n```",
+    "remediation_steps": "Remediate Reflected XSS via ``code`` marker by validating input.",
+    "severity": "medium",
+    "severity_change_conditions": "Severity drops once the fix ships.",
+    "target": "https://example.test/app",
+    "technical_analysis": "Technical analysis of Reflected XSS via ``code`` marker.",
+    "timestamp": "<TIMESTAMP>",
+    "title": "Reflected XSS via ``code`` marker"
+  }
+]

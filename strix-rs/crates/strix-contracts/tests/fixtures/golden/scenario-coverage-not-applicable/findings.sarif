@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "results": [
+        {
+          "kind": "notApplicable",
+          "level": "none",
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "graphql"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "injection — Not applicable: graphql\n\nThe target exposes no GraphQL endpoint."
+          },
+          "properties": {
+            "strix": {
+              "coverage_outcome": "not_applicable",
+              "recorded_by": "Root Agent",
+              "risk_area": "injection",
+              "source": "agent_reported",
+              "surface": "graphql"
+            }
+          },
+          "ruleId": "strix-coverage/injection",
+          "ruleIndex": 0
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "fullDescription": {
+                "text": "Coverage of injection across the assessed attack surface."
+              },
+              "help": {
+                "markdown": "Coverage of injection across the assessed attack surface.",
+                "text": "Coverage of injection across the assessed attack surface."
+              },
+              "id": "strix-coverage/injection",
+              "name": "injection",
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              },
+              "shortDescription": {
+                "text": "Coverage: injection"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

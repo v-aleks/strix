@@ -1,0 +1,60 @@
+{
+  "completeness": {
+    "caveats": [],
+    "complete": true,
+    "exit_reason": null,
+    "scan_status": "completed"
+  },
+  "entries": [
+    {
+      "evidence": "Token expiry behaviour could not be observed.",
+      "outcome": "needs_follow_up",
+      "outcome_label": "Requires further review",
+      "previous_outcomes": [],
+      "recorded_at": "<TIMESTAMP>",
+      "recorded_by": "Root Agent",
+      "risk_area": "authn",
+      "source": "agent_reported",
+      "surface": "websocket",
+      "updated_at": "<TIMESTAMP>"
+    }
+  ],
+  "gaps": [
+    {
+      "detail": "Token expiry behaviour could not be observed.",
+      "kind": "needs_follow_up",
+      "risk_area": "authn",
+      "surface": "websocket"
+    }
+  ],
+  "generated_at": "<TIMESTAMP>",
+  "machine_observed": {
+    "agents": [],
+    "findings_filed": 0,
+    "skills_exercised": [],
+    "source": "runtime"
+  },
+  "run_id": "<RUN_ID>",
+  "run_name": "coverage-needs-follow-up",
+  "schema_version": 1,
+  "scope": {
+    "diff_scope": null,
+    "instruction": "",
+    "scan_mode": "quick",
+    "scope_mode": "auto",
+    "targets": [
+      {
+        "target": "https://example.test/app",
+        "type": "url"
+      }
+    ]
+  },
+  "summary": {
+    "findings_filed": 0,
+    "gaps": 1,
+    "outcomes": {
+      "needs_follow_up": 1
+    },
+    "surfaces_reviewed": 1
+  }
+}

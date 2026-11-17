@@ -1,0 +1,16 @@
+[package]
+name = "strix-report"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Finding store, SARIF 2.1.0 emitter, coverage ledger and usage accounting"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[lints]
+workspace = true

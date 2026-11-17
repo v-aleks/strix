@@ -1,0 +1,27 @@
+[package]
+name = "strix-llm"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "OpenAI-compatible chat-completions client for a single local llama.cpp provider"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+bytes = { workspace = true }
+futures-util = { workspace = true }
+reqwest = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+uuid = { workspace = true }
+strix-config = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }
+strix-mock-llm = { path = "../strix-mock-llm" }
+tokio = { workspace = true }
+
+[lints]
+workspace = true

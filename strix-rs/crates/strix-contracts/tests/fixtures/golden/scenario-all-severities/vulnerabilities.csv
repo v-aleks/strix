@@ -1,0 +1,6 @@
+id,title,severity,timestamp,file
+vuln-0001,Finding with severity critical,CRITICAL,<TIMESTAMP>,vulnerabilities/vuln-0001.md
+vuln-0002,Finding with severity high,HIGH,<TIMESTAMP>,vulnerabilities/vuln-0002.md
+vuln-0003,Finding with severity medium,MEDIUM,<TIMESTAMP>,vulnerabilities/vuln-0003.md
+vuln-0004,Finding with severity low,LOW,<TIMESTAMP>,vulnerabilities/vuln-0004.md
+vuln-0005,Finding with severity info,INFO,<TIMESTAMP>,vulnerabilities/vuln-0005.md

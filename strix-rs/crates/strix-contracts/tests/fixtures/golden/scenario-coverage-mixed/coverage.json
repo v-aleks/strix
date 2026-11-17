@@ -1,0 +1,86 @@
+{
+  "completeness": {
+    "caveats": [],
+    "complete": true,
+    "exit_reason": null,
+    "scan_status": "completed"
+  },
+  "entries": [
+    {
+      "evidence": "The next parameter accepts an absolute URL.",
+      "outcome": "reported",
+      "outcome_label": "Finding reported",
+      "previous_outcomes": [],
+      "recorded_at": "<TIMESTAMP>",
+      "recorded_by": "Root Agent",
+      "risk_area": "open_redirect",
+      "source": "agent_reported",
+      "surface": "logout",
+      "updated_at": "<TIMESTAMP>"
+    },
+    {
+      "evidence": "Reset tokens are single use and expire in 15 minutes.",
+      "outcome": "ruled_out",
+      "outcome_label": "Ruled out",
+      "previous_outcomes": [],
+      "recorded_at": "<TIMESTAMP>",
+      "recorded_by": "Root Agent",
+      "risk_area": "authn",
+      "source": "agent_reported",
+      "surface": "password_reset",
+      "updated_at": "<TIMESTAMP>"
+    },
+    {
+      "evidence": "Upload path sanitization needs a second look.",
+      "outcome": "needs_follow_up",
+      "outcome_label": "Requires further review",
+      "previous_outcomes": [],
+      "recorded_at": "<TIMESTAMP>",
+      "recorded_by": "Root Agent",
+      "risk_area": "path_traversal",
+      "source": "agent_reported",
+      "surface": "file_upload",
+      "updated_at": "<TIMESTAMP>"
+    }
+  ],
+  "gaps": [
+    {
+      "detail": "Upload path sanitization needs a second look.",
+      "kind": "needs_follow_up",
+      "risk_area": "path_traversal",
+      "surface": "file_upload"
+    }
+  ],
+  "generated_at": "<TIMESTAMP>",
+  "machine_observed": {
+    "agents": [],
+    "findings_filed": 1,
+    "skills_exercised": [],
+    "source": "runtime"
+  },
+  "run_id": "<RUN_ID>",
+  "run_name": "coverage-mixed",
+  "schema_version": 1,
+  "scope": {
+    "diff_scope": null,
+    "instruction": "",
+    "scan_mode": "quick",
+    "scope_mode": "auto",
+    "targets": [
+      {
+        "target": "https://example.test/app",
+        "type": "url"
+      }
+    ]
+  },
+  "summary": {
+    "findings_filed": 1,
+    "gaps": 1,
+    "outcomes": {
+      "needs_follow_up": 1,
+      "reported": 1,
+      "ruled_out": 1
+    },
+    "surfaces_reviewed": 3
+  }
+}

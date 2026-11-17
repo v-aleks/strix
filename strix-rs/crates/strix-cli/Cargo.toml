@@ -1,0 +1,30 @@
+[package]
+name = "strix-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Command-line entry point of the Rust Strix engine"
+
+[[bin]]
+name = "strix"
+path = "src/main.rs"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+strix-agent = { workspace = true }
+strix-config = { workspace = true }
+strix-llm = { workspace = true }
+strix-report = { workspace = true }
+strix-runtime = { workspace = true }
+strix-tools = { workspace = true }
+strix-tui = { workspace = true }
+
+[lints]
+workspace = true

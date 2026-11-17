@@ -1,0 +1,34 @@
+[
+  {
+    "assumptions": "The target is in scope.",
+    "confidence": "high",
+    "confidence_rationale": "Reproduced twice.",
+    "counterevidence": "No counterevidence was found.",
+    "cvss_breakdown": {
+      "A": "H",
+      "AC": "L",
+      "AV": "N",
+      "C": "H",
+      "I": "H",
+      "PR": "N",
+      "S": "C",
+      "UI": "N"
+    },
+    "cwe": "CWE-94",
+    "description": "Description of Unauthenticated RCE in upload handler.",
+    "evidence": "Observed evidence for Unauthenticated RCE in upload handler.",
+    "finding_class": "dynamic",
+    "fix_effort": "medium",
+    "id": "vuln-0001",
+    "impact": "Impact of Unauthenticated RCE in upload handler.",
+    "poc_description": "Proof of concept for Unauthenticated RCE in upload handler.",
+    "poc_script_code": "```bash\ncurl https://example.test/app\n```",
+    "remediation_steps": "Remediate Unauthenticated RCE in upload handler by validating input.",
+    "severity": "critical",
+    "severity_change_conditions": "Severity drops once the fix ships.",
+    "target": "https://example.test/app",
+    "technical_analysis": "Technical analysis of Unauthenticated RCE in upload handler.",
+    "timestamp": "<TIMESTAMP>",
+    "title": "Unauthenticated RCE in upload handler"
+  }
+]

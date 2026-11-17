@@ -1,0 +1,43 @@
+[
+  {
+    "assumptions": "The target is in scope.",
+    "code_locations": [
+      {
+        "end_line": 44,
+        "file": "app/login.py",
+        "label": "sink",
+        "snippet": "cursor.execute(query % user_input)",
+        "start_line": 42
+      }
+    ],
+    "confidence": "high",
+    "confidence_rationale": "Reproduced twice.",
+    "counterevidence": "No counterevidence was found.",
+    "cvss_breakdown": {
+      "A": "N",
+      "AC": "L",
+      "AV": "N",
+      "C": "H",
+      "I": "H",
+      "PR": "N",
+      "S": "U",
+      "UI": "N"
+    },
+    "cwe": "CWE-89",
+    "description": "Description of SQL injection in login.",
+    "evidence": "Observed evidence for SQL injection in login.",
+    "finding_class": "dynamic",
+    "fix_effort": "medium",
+    "id": "vuln-0001",
+    "impact": "Impact of SQL injection in login.",
+    "poc_description": "Proof of concept for SQL injection in login.",
+    "poc_script_code": "```bash\ncurl https://example.test/app\n```",
+    "remediation_steps": "Remediate SQL injection in login by validating input.",
+    "severity": "high",
+    "severity_change_conditions": "Severity drops once the fix ships.",
+    "target": "https://example.test/app",
+    "technical_analysis": "Technical analysis of SQL injection in login.",
+    "timestamp": "<TIMESTAMP>",
+    "title": "SQL injection in login"
+  }
+]

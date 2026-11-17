@@ -1,0 +1,4 @@
+id,title,severity,timestamp,file
+vuln-0001,SQL injection in orders,HIGH,<TIMESTAMP>,vulnerabilities/vuln-0001.md
+vuln-0002,Vulnerable dependency: lodash 4.17.15,MEDIUM,<TIMESTAMP>,vulnerabilities/vuln-0002.md
+vuln-0003,Missing security headers,LOW,<TIMESTAMP>,vulnerabilities/vuln-0003.md

@@ -1,0 +1,45 @@
+[
+  {
+    "assumptions": "The target is in scope.",
+    "code_locations": [
+      {
+        "end_line": 12,
+        "file": "app/net/ping.py",
+        "fix_after": "subprocess.run(['ping', host], shell=False)",
+        "fix_before": "subprocess.run(f'ping {host}', shell=True)",
+        "label": "sink",
+        "snippet": "subprocess.run(f'ping {host}', shell=True)",
+        "start_line": 10
+      }
+    ],
+    "confidence": "high",
+    "confidence_rationale": "Reproduced twice.",
+    "counterevidence": "No counterevidence was found.",
+    "cvss_breakdown": {
+      "A": "H",
+      "AC": "L",
+      "AV": "N",
+      "C": "H",
+      "I": "H",
+      "PR": "N",
+      "S": "C",
+      "UI": "N"
+    },
+    "cwe": "CWE-78",
+    "description": "Description of Command injection in ping utility.",
+    "evidence": "Observed evidence for Command injection in ping utility.",
+    "finding_class": "dynamic",
+    "fix_effort": "medium",
+    "id": "vuln-0001",
+    "impact": "Impact of Command injection in ping utility.",
+    "poc_description": "Proof of concept for Command injection in ping utility.",
+    "poc_script_code": "```bash\ncurl https://example.test/app\n```",
+    "remediation_steps": "Remediate Command injection in ping utility by validating input.",
+    "severity": "critical",
+    "severity_change_conditions": "Severity drops once the fix ships.",
+    "target": "https://example.test/app",
+    "technical_analysis": "Technical analysis of Command injection in ping utility.",
+    "timestamp": "<TIMESTAMP>",
+    "title": "Command injection in ping utility"
+  }
+]

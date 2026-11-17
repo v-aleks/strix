@@ -1,0 +1,38 @@
+{
+  "completeness": {
+    "caveats": [],
+    "complete": true,
+    "exit_reason": null,
+    "scan_status": "completed"
+  },
+  "entries": [],
+  "gaps": [],
+  "generated_at": "<TIMESTAMP>",
+  "machine_observed": {
+    "agents": [],
+    "findings_filed": 1,
+    "skills_exercised": [],
+    "source": "runtime"
+  },
+  "run_id": "<RUN_ID>",
+  "run_name": "long-title",
+  "schema_version": 1,
+  "scope": {
+    "diff_scope": null,
+    "instruction": "",
+    "scan_mode": "quick",
+    "scope_mode": "auto",
+    "targets": [
+      {
+        "target": "https://example.test/app",
+        "type": "url"
+      }
+    ]
+  },
+  "summary": {
+    "findings_filed": 1,
+    "gaps": 0,
+    "outcomes": {},
+    "surfaces_reviewed": 0
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      },
+      "results": [
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Informational observation about headers\n\nDescription of Informational observation about headers."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "20c1cd4625879fd75073eab888aa6429f3e642199a4649b76ccadbbbe696fba8"
+          },
+          "properties": {
+            "security-severity": "1.0",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "id": "vuln-0001",
+              "impact": "Impact of Informational observation about headers.",
+              "poc": {
+                "description": "Proof of concept for Informational observation about headers.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Informational observation about headers by validating input.",
+              "severity": "info",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Informational observation about headers.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "50498ed4ddae30bda64881f691e9a763866dce29f60bcea1dc88f99d09109910",
+            "synthetic_location": true
+          },
+          "ruleId": "vuln-0001",
+          "ruleIndex": 0
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "fullDescription": {
+                "text": "Description of Informational observation about headers."
+              },
+              "help": {
+                "markdown": "Description of Informational observation about headers.\n\nImpact of Informational observation about headers.\n\nRemediate Informational observation about headers by validating input.",
+                "text": "Description of Informational observation about headers.\n\nImpact of Informational observation about headers.\n\nRemediate Informational observation about headers by validating input."
+              },
+              "id": "vuln-0001",
+              "name": "Informational observation about headers",
+              "properties": {
+                "security-severity": "1.0",
+                "tags": [
+                  "security",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Informational observation about headers"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

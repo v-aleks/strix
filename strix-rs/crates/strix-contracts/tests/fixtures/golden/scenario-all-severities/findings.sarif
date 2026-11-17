@@ -1,0 +1,417 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 5
+      },
+      "results": [
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Finding with severity critical\n\nDescription of Finding with severity critical."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "831a3d546f354cfe053d9ab776efe5a245053b6839fa8eb209eb1275f965d977"
+          },
+          "properties": {
+            "security-severity": "9.5",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-100",
+              "id": "vuln-0001",
+              "impact": "Impact of Finding with severity critical.",
+              "poc": {
+                "description": "Proof of concept for Finding with severity critical.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Finding with severity critical by validating input.",
+              "severity": "critical",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Finding with severity critical.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "16ebdccba5d8f3155ff15e792d4af650f0b3a26563088119ddb6d239df689286",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-100",
+          "ruleIndex": 0
+        },
+        {
+          "level": "error",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Finding with severity high\n\nDescription of Finding with severity high."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "28ce7653d6ac167ebbd7bbec7ef37473a31607e6f7aa58122ee3f1e5e451a6a1"
+          },
+          "properties": {
+            "security-severity": "8.0",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-101",
+              "id": "vuln-0002",
+              "impact": "Impact of Finding with severity high.",
+              "poc": {
+                "description": "Proof of concept for Finding with severity high.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Finding with severity high by validating input.",
+              "severity": "high",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Finding with severity high.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "5d543c1720387f0ad1e709af173fd782d64bd446a15ef55c0af45fb4d6f06fc4",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-101",
+          "ruleIndex": 1
+        },
+        {
+          "level": "warning",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Finding with severity medium\n\nDescription of Finding with severity medium."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "f6840a065fcc6973aa3852d9abf82b2ca7e48d7abccfea0e9db0cad98f3b048a"
+          },
+          "properties": {
+            "security-severity": "5.5",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-102",
+              "id": "vuln-0003",
+              "impact": "Impact of Finding with severity medium.",
+              "poc": {
+                "description": "Proof of concept for Finding with severity medium.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Finding with severity medium by validating input.",
+              "severity": "medium",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Finding with severity medium.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "bffcb8b8730571cc42a52737719e207ecda336520d88ac2d4219c7f057354101",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-102",
+          "ruleIndex": 2
+        },
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Finding with severity low\n\nDescription of Finding with severity low."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "e0a7b1ed699e13879321f1530d615844caecfb7ceb24910c3694ead7570551a8"
+          },
+          "properties": {
+            "security-severity": "3.0",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-103",
+              "id": "vuln-0004",
+              "impact": "Impact of Finding with severity low.",
+              "poc": {
+                "description": "Proof of concept for Finding with severity low.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Finding with severity low by validating input.",
+              "severity": "low",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Finding with severity low.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "75e91d151a3b99a6ba9b1010ff37e05fa885aee693db6e0825e79edc677d0b4c",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-103",
+          "ruleIndex": 3
+        },
+        {
+          "level": "note",
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "https://example.test/app",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "message": {
+            "text": "Finding with severity info\n\nDescription of Finding with severity info."
+          },
+          "partialFingerprints": {
+            "primaryLocationLineHash": "9bdd1a45855e6d9b7ff7eadb6c9b79ffa9ad62958f1d82361c500a7453ce26cf"
+          },
+          "properties": {
+            "security-severity": "1.0",
+            "strix": {
+              "confidence": "high",
+              "confidence_rationale": "Reproduced twice.",
+              "counterevidence": "No counterevidence was found.",
+              "cwe": "CWE-104",
+              "id": "vuln-0005",
+              "impact": "Impact of Finding with severity info.",
+              "poc": {
+                "description": "Proof of concept for Finding with severity info.",
+                "script_available": true
+              },
+              "remediation_steps": "Remediate Finding with severity info by validating input.",
+              "severity": "info",
+              "severity_change_conditions": "Severity drops once the fix ships.",
+              "target": "https://example.test/app",
+              "technical_analysis": "Technical analysis of Finding with severity info.",
+              "timestamp": "<TIMESTAMP>"
+            },
+            "strix_vuln_class_hash": "dae5170c3eba074f615ce7a3368158b96db1f99f95cdf0972e95d74aa3964693",
+            "synthetic_location": true
+          },
+          "ruleId": "CWE-104",
+          "ruleIndex": 4
+        }
+      ],
+      "tool": {
+        "driver": {
+          "informationUri": "https://strix.ai",
+          "name": "Strix",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Description of Finding with severity critical."
+              },
+              "help": {
+                "markdown": "Description of Finding with severity critical.\n\nImpact of Finding with severity critical.\n\nRemediate Finding with severity critical by validating input.",
+                "text": "Description of Finding with severity critical.\n\nImpact of Finding with severity critical.\n\nRemediate Finding with severity critical by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/100.html",
+              "id": "CWE-100",
+              "name": "Finding with severity critical",
+              "properties": {
+                "security-severity": "9.5",
+                "tags": [
+                  "security",
+                  "CWE-100",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Finding with severity critical"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "fullDescription": {
+                "text": "Description of Finding with severity high."
+              },
+              "help": {
+                "markdown": "Description of Finding with severity high.\n\nImpact of Finding with severity high.\n\nRemediate Finding with severity high by validating input.",
+                "text": "Description of Finding with severity high.\n\nImpact of Finding with severity high.\n\nRemediate Finding with severity high by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/101.html",
+              "id": "CWE-101",
+              "name": "Finding with severity high",
+              "properties": {
+                "security-severity": "8.0",
+                "tags": [
+                  "security",
+                  "CWE-101",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Finding with severity high"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Description of Finding with severity medium."
+              },
+              "help": {
+                "markdown": "Description of Finding with severity medium.\n\nImpact of Finding with severity medium.\n\nRemediate Finding with severity medium by validating input.",
+                "text": "Description of Finding with severity medium.\n\nImpact of Finding with severity medium.\n\nRemediate Finding with severity medium by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/102.html",
+              "id": "CWE-102",
+              "name": "Finding with severity medium",
+              "properties": {
+                "security-severity": "5.5",
+                "tags": [
+                  "security",
+                  "CWE-102",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Finding with severity medium"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "fullDescription": {
+                "text": "Description of Finding with severity low."
+              },
+              "help": {
+                "markdown": "Description of Finding with severity low.\n\nImpact of Finding with severity low.\n\nRemediate Finding with severity low by validating input.",
+                "text": "Description of Finding with severity low.\n\nImpact of Finding with severity low.\n\nRemediate Finding with severity low by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/103.html",
+              "id": "CWE-103",
+              "name": "Finding with severity low",
+              "properties": {
+                "security-severity": "3.0",
+                "tags": [
+                  "security",
+                  "CWE-103",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Finding with severity low"
+              }
+            },
+            {
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "fullDescription": {
+                "text": "Description of Finding with severity info."
+              },
+              "help": {
+                "markdown": "Description of Finding with severity info.\n\nImpact of Finding with severity info.\n\nRemediate Finding with severity info by validating input.",
+                "text": "Description of Finding with severity info.\n\nImpact of Finding with severity info.\n\nRemediate Finding with severity info by validating input."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/104.html",
+              "id": "CWE-104",
+              "name": "Finding with severity info",
+              "properties": {
+                "security-severity": "1.0",
+                "tags": [
+                  "security",
+                  "CWE-104",
+                  "stride:T",
+                  "stride:I"
+                ]
+              },
+              "shortDescription": {
+                "text": "Finding with severity info"
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

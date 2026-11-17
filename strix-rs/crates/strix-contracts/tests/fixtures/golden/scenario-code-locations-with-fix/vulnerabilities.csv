@@ -1,0 +1,2 @@
+id,title,severity,timestamp,file
+vuln-0001,Command injection in ping utility,CRITICAL,<TIMESTAMP>,vulnerabilities/vuln-0001.md

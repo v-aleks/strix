@@ -1,0 +1,2 @@
+id,title,severity,timestamp,file
+vuln-0001,Stored XSS in comment body,HIGH,<TIMESTAMP>,vulnerabilities/vuln-0001.md

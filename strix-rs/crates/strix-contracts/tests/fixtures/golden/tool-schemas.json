@@ -1,0 +1,2137 @@
+{
+  "count": 43,
+  "tools": [
+    {
+      "description": "Record a private chain-of-thought note. No side effects, no new info.\n\nUse ``think`` when you need a dedicated space to reason before acting —\nnot as an output channel. It's particularly valuable for:\n\n- **Tool output analysis** — carefully processing the output of a\n  previous tool call before deciding the next step.\n- **Policy-heavy environments** — when you need to follow detailed\n  guidelines (engagement scope, auth boundaries) and verify compliance\n  before each action.\n- **Sequential decision making** — when each action builds on previous\n  ones and mistakes are costly (e.g., destructive operations,\n  irreversible auth changes).\n- **Multi-step exploit planning** — breaking down a complex chain into\n  manageable steps and tracking what's been confirmed vs. assumed.\n\nStructure your thought to be useful: current state, what you've\nconfirmed, your next planned actions, risk assessment. Don't use\n``think`` to chat — use it to plan.",
+      "name": "think",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "thought": {
+            "description": "The reasoning to record. Must be non-empty.",
+            "title": "Thought",
+            "type": "string"
+          }
+        },
+        "required": [
+          "thought"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Return the markdown body of one or more skills as reference material.\n\nUse this when you need exact syntax / workflow / payload guidance\nright before acting on a technology that wasn't preloaded for your\nagent. The skill content lands inline as a tool result — no\npermanent prompt change, just in-conversation reference.\n\nFor permanent skill assignment, pass ``skills=[…]`` to\n``create_agent`` when spawning a specialist child instead.",
+      "name": "load_skill",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "skills": {
+            "description": "List of skill names (e.g. ``[\"xss\", \"sql_injection\"]``).\nMax 5. Names match the bare files under\n``strix/skills/<category>/<name>.md``.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Skills",
+            "type": "array"
+          }
+        },
+        "required": [
+          "skills"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Create one or many todos for the current agent.\n\nAlways pass a list, even for a single todo (wrap it in a one-item array).\n\nEach agent (including subagents) has its **own private todo list** —\nyour todos don't leak to other agents and vice versa.\n\nWhen to use:\n\n- Planning multi-step assessments with parallel workstreams.\n- Tracking work you'll come back to later.\n- Breaking down complex scopes (per-endpoint, per-target, per-vuln-class).\n\nWhen NOT to use:\n\n- Simple linear workflows where progress is obvious.\n- Single quick task — just do it.",
+      "name": "create_todo",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "todos": {
+            "description": "JSON array of todo objects. For one todo, pass a one-item\nlist. Each object's fields:\n\n- ``title`` (str, **required**): short actionable title,\n  e.g. ``\"Test /api/admin for IDOR\"``.\n- ``description`` (str, optional): extra context or\n  acceptance criteria.\n- ``priority`` (str, optional): one of ``\"low\"`` /\n  ``\"normal\"`` / ``\"high\"`` / ``\"critical\"``. Anything else,\n  including omitting it, falls back to ``\"normal\"`` rather\n  than failing.\n\nExample: ``[{\"title\": \"Probe /admin\", \"priority\": \"high\"},\n{\"title\": \"Check JWT alg=none\"}]``.",
+            "title": "Todos",
+            "type": "string"
+          }
+        },
+        "required": [
+          "todos"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "List the current agent's todos, sorted by status then priority.\n\nSort order: status (done → in_progress → pending), then priority\nwithin each status (critical → high → normal → low).",
+      "name": "list_todos",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter — ``\"low\"`` / ``\"normal\"`` / ``\"high\"`` /\n``\"critical\"``.",
+            "title": "Priority"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter — ``\"pending\"`` / ``\"in_progress\"`` / ``\"done\"``.",
+            "title": "Status"
+          }
+        },
+        "required": [
+          "status",
+          "priority"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Update one or many todos.\n\nAlways pass a list, even for a single update (wrap it in a one-item\narray).\n\nFor toggling status only, prefer the dedicated ``mark_todo_done`` /\n``mark_todo_pending`` tools — they're simpler and accept the same\nlist-of-ids form.",
+      "name": "update_todo",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "updates": {
+            "description": "JSON array of update objects. For one update, pass a\none-item list. Each object's fields:\n\n- ``todo_id`` (str, **required**): ID returned by\n  ``create_todo``.\n- ``title`` (str, optional): new title.\n- ``description`` (str, optional): new description (empty\n  string clears it).\n- ``priority`` (str, optional): one of ``\"low\"`` /\n  ``\"normal\"`` / ``\"high\"`` / ``\"critical\"``.\n- ``status`` (str, optional): one of ``\"pending\"`` /\n  ``\"in_progress\"`` / ``\"done\"``.\n\nOmitted fields stay unchanged. Example:\n``[{\"todo_id\": \"abc\", \"status\": \"in_progress\",\n\"priority\": \"high\"}]``.",
+            "title": "Updates",
+            "type": "string"
+          }
+        },
+        "required": [
+          "updates"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Mark one or many todos as done.\n\nAlways pass a list, even for a single ID (wrap it in a one-item array).",
+      "name": "mark_todo_done",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "todo_ids": {
+            "description": "JSON array of todo IDs to mark done. For one todo,\npass a one-item list.",
+            "title": "Todo Ids",
+            "type": "string"
+          }
+        },
+        "required": [
+          "todo_ids"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Reset one or many todos to pending (e.g., to retry a failed task).\n\nAlways pass a list, even for a single ID (wrap it in a one-item array).",
+      "name": "mark_todo_pending",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "todo_ids": {
+            "description": "JSON array of todo IDs to reset to pending. For one\ntodo, pass a one-item list.",
+            "title": "Todo Ids",
+            "type": "string"
+          }
+        },
+        "required": [
+          "todo_ids"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Delete one or many todos. Removes them entirely (no soft-delete).\n\nAlways pass a list, even for a single ID (wrap it in a one-item array).",
+      "name": "delete_todo",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "todo_ids": {
+            "description": "JSON array of todo IDs to delete. For one todo, pass\na one-item list.",
+            "title": "Todo Ids",
+            "type": "string"
+          }
+        },
+        "required": [
+          "todo_ids"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Document an observation, finding, methodology step, or research note.\n\nNotes are visible to every agent in the same scan for the lifetime\nof the run; they live in-memory only and are cleared when the\nprocess exits. Each note records the agent that wrote it, so\n``list_notes`` / ``get_note`` show the author (``agent_name``) and\nflag your own notes with ``by_you``.\n\nFor actionable tasks, use ``todo`` instead — notes are for capturing\ninformation, todos are for tracking work.\n\nCategories:\n\n- ``general`` — default, anything that doesn't fit elsewhere.\n- ``findings`` — confirmed vulnerabilities or weaknesses (write\n  these up promptly; you'll cite them when filing reports).\n- ``methodology`` — what you tried, what worked, what didn't —\n  useful for the final scan report.\n- ``questions`` — open questions / things to come back to.\n- ``plan`` — multi-step plans you want to track.\n- ``wiki`` — long-form repository or target maps.\n\nTags are free-form (e.g. ``[\"sqli\", \"auth\", \"critical\"]``) — useful\nfor later ``list_notes(tags=...)`` filtering.",
+      "name": "create_note",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "default": "general",
+            "description": "One of the categories above. Default ``\"general\"``.",
+            "title": "Category",
+            "type": "string"
+          },
+          "content": {
+            "description": "Full note body. Markdown is preserved.",
+            "title": "Content",
+            "type": "string"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional free-form tags.",
+            "title": "Tags"
+          },
+          "title": {
+            "description": "Short headline.",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "content",
+          "category",
+          "tags"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "List existing notes — metadata-first by default.\n\nFilters compose: passing ``category=\"findings\"`` and\n``tags=[\"sqli\"]`` returns notes that are *both* in the findings\ncategory AND have at least one of those tags.\n\nBy default each entry includes a ``content_preview`` (first 280\nchars). Set ``include_content=True`` to get full bodies — useful\nwhen you need to scan many notes; expensive in tokens for large\nnotes.\n\nEach entry also carries the author (``agent_name``) and, for notes\nyou wrote yourself, ``by_you: true``.",
+      "name": "list_notes",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter by category.",
+            "title": "Category"
+          },
+          "include_content": {
+            "default": false,
+            "description": "When False (default) entries have a preview;\nwhen True the full ``content`` is included.",
+            "title": "Include Content",
+            "type": "boolean"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Substring match against title and content.",
+            "title": "Search"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter to notes that have any of these tags.",
+            "title": "Tags"
+          }
+        },
+        "required": [
+          "category",
+          "tags",
+          "search",
+          "include_content"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Fetch one note by its 6-char ID. Returns the full content.",
+      "name": "get_note",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "note_id": {
+            "description": "Note id from ``create_note`` or a ``list_notes`` entry.",
+            "title": "Note Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Update a note's title, content, or tags.\n\nPass ``None`` for any field you want left unchanged. Replacing\n``content`` is a full overwrite — to append, fetch first with\n``get_note``, concat, and pass the result.",
+      "name": "update_note",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "New content, or ``None`` to keep.",
+            "title": "Content"
+          },
+          "note_id": {
+            "description": "Target note's 6-char ID.",
+            "title": "Note Id",
+            "type": "string"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "New tags list, or ``None`` to keep.",
+            "title": "Tags"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "New title, or ``None`` to keep.",
+            "title": "Title"
+          }
+        },
+        "required": [
+          "note_id",
+          "title",
+          "content",
+          "tags"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Delete a note.",
+      "name": "delete_note",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "note_id": {
+            "description": "Note id to delete.",
+            "title": "Note Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "note_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Record that you reviewed a surface, and how that review closed.\n\nA scan that only reports findings cannot answer the question every\nclient asks: *what did you actually check?* This tool captures that\nnegative space. Record an entry whenever you finish assessing a\nsurface for a risk — including (especially including) when you found\nnothing.\n\nRecord coverage as you go, not in a batch at the end. Entries are\nshared across every agent in the scan, and the root agent reconciles\nthem into the final report.\n\nCoverage is not append-only bookkeeping: if this surface and risk\nalready have an entry — yours or another agent's — this call is\nrejected and returns that entry's id, because two rows for one\nsurface leave the report showing a stale conclusion next to its\nreplacement. Call ``update_coverage`` on the id it hands you\ninstead. Resolving somebody else's ``needs_follow_up`` is exactly\nthat case.\n\n**Outcomes** (pick exactly one):\n\n- ``reported`` — you confirmed an issue and filed a report for it.\n- ``no_issue_found`` — you tested this properly and found nothing.\n- ``ruled_out`` — you had a specific candidate and disproved it. The\n  ``evidence`` must name the control that makes it safe, at a\n  location, and confirm it runs on every attacker-reachable path.\n  \"It looked fine\" is not ``ruled_out``.\n- ``not_applicable`` — this risk cannot apply here (e.g. no XML\n  parsing on a surface, so no XXE). Say why in ``evidence``.\n- ``needs_follow_up`` — plausible but unresolved: you could not\n  confirm it and could not name a control that rules it out. This is\n  a legitimate outcome. Use it rather than quietly dropping a\n  candidate, and name the gap in ``evidence`` (missing credentials,\n  service you could not start, unconfirmed reachability).\n\nNever use ``no_issue_found`` or ``ruled_out`` to close something you\nwere simply unsure about — that is ``needs_follow_up``. Missing\ninformation is not proof of safety.",
+      "name": "record_coverage",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "evidence": {
+            "default": "",
+            "description": "How you know. Required for ``ruled_out``,\n``not_applicable``, and ``needs_follow_up``; recommended\notherwise. Keep it to a sentence or two — name the control,\nthe test performed, or the missing piece.",
+            "title": "Evidence",
+            "type": "string"
+          },
+          "outcome": {
+            "description": "One of ``reported`` / ``no_issue_found`` /\n``ruled_out`` / ``not_applicable`` / ``needs_follow_up``.",
+            "title": "Outcome",
+            "type": "string"
+          },
+          "risk_area": {
+            "description": "What you were testing it for (e.g. ``\"IDOR /\nobject-level authorization\"``, ``\"SQL injection\"``,\n``\"SSRF\"``).",
+            "title": "Risk Area",
+            "type": "string"
+          },
+          "surface": {
+            "description": "What you reviewed — an endpoint, route, parameter,\nfile, component, or host (e.g. ``\"POST /api/orders/{id}\"``,\n``\"src/auth/session.py\"``, ``\"admin dashboard\"``).",
+            "title": "Surface",
+            "type": "string"
+          }
+        },
+        "required": [
+          "surface",
+          "risk_area",
+          "outcome",
+          "evidence"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Change how an already-recorded surface closed.\n\nCoverage is shared across the whole agent tree, and a surface's\nstate is not final when it is first written. Use this whenever\nlater work changes the answer:\n\n- You picked up someone's ``needs_follow_up`` and resolved it —\n  move it to ``reported``, ``ruled_out``, or ``no_issue_found``.\n- You had the credentials or running service the original agent\n  lacked, and could finally test it properly.\n- You found the control that rules a candidate out, at a location,\n  on every attacker-reachable path.\n- You went the other way: something recorded ``no_issue_found`` or\n  ``ruled_out`` turns out to be exploitable, or the control you see\n  does not cover the path you found. Move it back.\n\nThe surface and risk area stay fixed — this is the same review,\nreaching a different conclusion. Do not record a fresh entry for a\nsurface that already has one; that leaves a stale open item next to\nits own resolution. Find the id with ``list_coverage`` (filter by\n``surface``), then update it.\n\nThe previous outcome, evidence, and author are kept as history, so\nthe ledger still shows that the surface was once open and who\nclosed it.",
+      "name": "update_coverage",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "entry_id": {
+            "description": "The id of the entry to update, from ``list_coverage``.",
+            "title": "Entry Id",
+            "type": "string"
+          },
+          "evidence": {
+            "default": "",
+            "description": "How you know, now. Required for ``ruled_out``,\n``not_applicable``, and ``needs_follow_up``. Say what\nchanged, not just what you concluded — the reader needs to\nknow why this closed differently the second time.",
+            "title": "Evidence",
+            "type": "string"
+          },
+          "outcome": {
+            "description": "The new outcome — ``reported`` / ``no_issue_found`` /\n``ruled_out`` / ``not_applicable`` / ``needs_follow_up``.",
+            "title": "Outcome",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entry_id",
+          "outcome",
+          "evidence"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "List coverage entries recorded so far in this scan.\n\n**For the orchestrator / root agent.** Use it to see which surfaces\nhave been assessed, spot gaps before finishing, and pull the\nunresolved ``needs_follow_up`` rows into the final report. Leaf\nagents should record their own coverage and get on with testing.\n\nReturns each entry with its ``surface``, ``risk_area``, ``outcome``,\nevidence preview, and the agent that recorded it, plus\n``outcome_counts`` across the whole scan.",
+      "name": "list_coverage",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "outcome": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional filter — one of ``reported`` /\n``no_issue_found`` / ``ruled_out`` / ``not_applicable`` /\n``needs_follow_up``. Filter on ``needs_follow_up`` before\nfinishing the scan to see what is still open.",
+            "title": "Outcome"
+          },
+          "surface": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional case-insensitive substring filter on the\nsurface name.",
+            "title": "Surface"
+          }
+        },
+        "required": [
+          "outcome",
+          "surface"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Read this scan's threat model for a target, if an agent has derived one.\n\nThe threat model is this run's shared answer to who the attacker\nis, where the trust boundaries sit, and what counts as critical\nhere. Call it before you start hunting so you inherit the shared\nview instead of re-deriving it, and so every agent on this run\nagrees on what \"attacker-controlled\" means.\n\nIt is scoped to this scan and nothing is carried over from an\nearlier run, so an empty result means no agent has derived one yet.\n\nWorks black-box or white-box. The target can be a host, a URL, an\nAPI base, or a repository path; equivalent spellings of the same\nhost resolve to the same model, and a checkout resolves to its\nremote, so a model derived white-box by one agent is read back by\nanother testing the deployment.\n\nReturns ``found: false`` when nothing has been derived yet — derive\none and share it with ``save_threat_model``.\n\nAny ``amendments`` in the response are corrections other agents\nrecorded after the base model was written. They are part of the\nmodel — read them, and prefer the later statement where one\ncontradicts the base text.",
+      "name": "get_threat_model",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "target": {
+            "description": "What the model describes — a host or URL\n(``https://app.example.com``), or a repository path\n(``/workspace/myrepo``). Use the same value the scan was\npointed at, so agents converge on one model.",
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Share a target-scoped threat model with the other agents on this scan.\n\nThe model lives for this run only — it is not written to disk and a\nlater scan of the same host or tree starts without it.\n\n**This replaces the whole document, and clears any amendments** —\nit is for the agent establishing the baseline (normally root,\nbefore subagents start), or for folding accumulated amendments back\ninto the body. If a model already exists and you only need to\ncorrect or extend part of it, call ``amend_threat_model`` instead;\nsaving over it will silently discard whatever other agents added.\n\n**Write it from whatever evidence you have.** With source, ground\nit in the code and name the files, entrypoints, and controls that\nmake each claim true. Black-box, ground it in recon: the hosts and\nports that answered, the technology fingerprints, the observed\nroles and tenants, the authentication and session model, the\nendpoints and parameters you enumerated. A black-box model is\nnecessarily provisional — say which parts are inferred rather than\nobserved, and let later agents amend it as the picture fills in.\n\n**Scope it to the target, not to your slice of it.** Do not centre\nit on the diff you were handed, the subsystem you were assigned, or\nthe one host that happened to answer first. With source, distinguish\nreal product and runtime surfaces from test, docs, example, and\ndeveloper-tooling paths — in a monorepo, do not let ``tests/`` or\none-off scripts become the centre of gravity unless the code shows\nthey are genuinely deployed. Where the target documents its own\nboundary — an ``AGENTS`` file, a specific ``SECURITY.md``, a\npublished API spec, an engagement scope — build on it rather than\ninventing a competing story.\n\nStructure the content in Markdown. Title it ``# Threat model:``\nfollowed by the target and nothing else (no date, mode, or run\nlabel), then use these sections:\n\n- **Overview** — what the target actually is, its real-world usage,\n  and which parts are product/runtime versus tooling or\n  non-production. One short paragraph, then the main components as\n  a list, one line each: the component, then what it does.\n- **Trust Boundaries and Assumptions** — the boundaries, the actors\n  on either side, and the invariants that must hold. Give each\n  boundary its own item in one shape: what trusts what, then\n  ``Enforcement:`` and the control that holds it, or that nothing\n  does. Separate attacker-controlled, operator-controlled, and\n  developer-controlled inputs explicitly. Black-box, this is the\n  role, tenant, and privilege model: who can reach what before\n  authenticating, as a low-privilege user, and across tenants.\n- **Attack Surface and Attacker Stories** — the exposed surfaces\n  (hosts, endpoints, parameters, integrations, or the code-level\n  entrypoints and sinks), the mitigations already present that\n  materially change severity or reach, realistic attacker stories,\n  and the stories that are *not* realistic here and why. Put the\n  realistic stories in a table (who, starting access, path,\n  impact) and the unrealistic ones in a short list with the\n  reason.\n- **Severity Calibration** — what critical / high / medium / low\n  look like for *this* target, with a concrete example at each\n  level, as a table with one row per level. Where a vulnerability\n  class needs attacker control that does not exist in real usage,\n  say so here.\n\n**Write it to be read.** A person opens this document after the\nscan to learn how the target was understood, and an agent reads it\nbefore every decision, so both need to find one fact quickly. Use\nplain, complete sentences and say each thing once.\n\n- One point per list item, in a sentence or two. When an item\n  needs more than that, give the topic a ``###`` sub-heading under\n  its section and break it into short items there.\n- Put anything enumerable in a Markdown table instead of a\n  sentence: hosts, endpoints, roles and what each can reach,\n  entrypoints and their sinks, files and the control each one\n  holds. One row per thing, with a column for why it matters.\n  Never run a chain of identifiers through a sentence or a\n  bracket.\n- Use code formatting only for literal identifiers the reader may\n  search for (a path, a route, a function, a claim name), and bold\n  only for the term an item defines. A line that is mostly code\n  spans and bold reads as noise.\n- Mark every fact you inferred rather than observed with\n  ``(inferred)`` on that item or row, and nowhere else, so a reader\n  can tell at a glance and the final review can find what is still\n  unconfirmed.\n- Keep the four section headings above exactly, so agents can find\n  them.\n\nReadable does not mean thinner. Keep every file, route, role, and\ncontrol that grounds a claim; move it into a table or a diagram\nrather than dropping it.\n\n**Draw it where a picture is clearer than prose.** People read this\ndocument too, and fenced ``mermaid`` blocks render as diagrams. Under\nTrust Boundaries, include a ``flowchart`` of the actors and\ncomponents with one ``subgraph`` per trust zone and each edge\nlabelled with what crosses it (credential, token, untrusted\ncontent). Where one attacker story carries the model, add a\n``sequenceDiagram`` of it. Draw only what the prose states — a\ndiagram is a view of the model, not a place for new claims — and\nkeep it small enough to read: a dozen nodes, short labels.",
+      "name": "save_threat_model",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "content": {
+            "description": "The full threat model in Markdown.",
+            "title": "Content",
+            "type": "string"
+          },
+          "target": {
+            "description": "What the model describes — a host or URL\n(``https://app.example.com``), or a repository path\n(``/workspace/myrepo``). Use the same value the scan was\npointed at.",
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target",
+          "content"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Correct or extend the existing threat model without replacing it.\n\nThe baseline is written before anyone starts hunting, so it is\nwritten with the least information anyone will ever have. That is\ndoubly true black-box, where the model starts as inference over\nrecon output and only becomes real as agents authenticate, map\nroles, and reach the surfaces behind them. When your work\ncontradicts the model or fills in something it missed, record that\nhere — every agent that calls ``get_threat_model`` afterwards sees\nyour addendum next to the base model.\n\nAmendments are append-only and attributed, so two agents amending\nat once both survive. That is the difference from\n``save_threat_model``, which overwrites the document and drops\nevery amendment on it.\n\nWorth amending:\n\n- A boundary the model calls trusted that you found is\n  attacker-reachable, or vice versa.\n- A host, endpoint, parameter, role, sink, or shared control the\n  model does not mention.\n- Something the model only inferred that you have now observed — or\n  that turned out not to be true.\n- A severity call the model got wrong for this target, with the\n  reason.\n- An assumption you disproved — the model says input is validated\n  upstream and you found the path that skips it.\n\nNot worth amending: individual findings (those are reports), or\nrestating what the model already says.",
+      "name": "amend_threat_model",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "addendum": {
+            "description": "The correction, in Markdown. State what the base\nmodel says, what is actually true, and the endpoint, host,\nfile, or control that proves it.",
+            "title": "Addendum",
+            "type": "string"
+          },
+          "target": {
+            "description": "What the model describes — the same host, URL, or\nrepository path used to save it.",
+            "title": "Target",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target",
+          "addendum"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Real-time web search (Exa or Perplexity) — your primary research tool.\n\nUse it liberally for anything that's not in your training data:\n\n- Current CVEs, advisories, and 0-days for a specific\n  service/version (``OpenSSH 9.6 RCE``, ``Jenkins 2.401.3 auth\n  bypass``).\n- Latest WAF / EDR bypass techniques (``Cloudflare WAF SQLi\n  bypass 2025``, ``CrowdStrike Falcon evasion``).\n- Tool documentation, flag references, payload galleries.\n- Target reconnaissance / OSINT (company tech stack, leaked\n  credentials, exposed assets).\n- Cloud-provider misconfiguration patterns\n  (Azure/AWS/GCP-specific attack paths).\n- Bug-bounty writeups and security research papers.\n- Compliance frameworks and CWE/CVSS guidance.\n- Picking the right Python lib / Kali tool for a job (``best 2025\n  lib for JWT alg-confusion``).\n- When stuck — looking up the exact error message, ``Access\n  denied`` quirks, kernel-specific local-privesc exploits.\n\nBe specific: include version numbers, error messages, target\ntechnology, and the exact problem you're stuck on. The more context\nin the query, the more actionable the answer. Vague queries get\ngeneric answers.\n\nA security-focused system prompt biases responses toward CVEs,\nexploits, Kali-compatible tooling, and concrete code/command\nexamples.\n\nWith the Exa provider you get a ranked list of results, each with a\ntitle, URL, and a short security-focused summary. Read the result\nyou need, then call ``web_get_contents`` with its URL to pull the\nfull page text when a summary is not enough. With Perplexity you get\na single synthesized cited answer.\n\n**Good example queries** (each is a full sentence, names a\nversion/product, and asks one concrete thing):\n\n- ``\"Found OpenSSH 7.4 on port 22 — any known RCE or privesc for\n  this exact version?\"``\n- ``\"Cloudflare WAF is blocking my sqlmap on a login form — what\n  bypass techniques work in 2025?\"``\n- ``\"Target runs WordPress 5.8.3 + WooCommerce 6.1.1 — current\n  RCE chains for this combo?\"``\n- ``\"Low-priv shell on Ubuntu 20.04 kernel 5.4.0-74-generic — what\n  local privesc exploits hit this kernel?\"``\n- ``\"Compromised domain user on Windows Server 2019 AD — quietest\n  paths to Domain Admin without tripping EDR?\"``\n- ``\"'Access denied' uploading a webshell to IIS 10.0 — alternate\n  Windows IIS upload bypass techniques?\"``\n- ``\"Discovered Jenkins 2.401.3 on staging — current authn-bypass\n  and RCE exploits for this version?\"``\n- ``\"Best 2025 Python lib for JWT algorithm-confusion + weak-secret\n  cracking?\"``",
+      "name": "web_search",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "description": "The search query — a full sentence with version numbers,\ntarget tech, and the specific question. Treat it like a\nticket title for a senior security engineer.",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Fetch the full, cleaned text of specific web pages (Exa only).\n\nUse this as the drill-down step after ``web_search``: when a result's\nsummary is not enough, pass that result's URL here to read the whole\npage. Good for reading a full advisory, a CVE writeup,\nan exploit proof-of-concept, or vendor documentation end to end.\n\nPrefer ``web_search`` first to find the right pages, then fetch only\nthe few URLs worth reading in full — each page can be large, so avoid\nfetching many pages you do not need.\n\nThis tool needs the Exa provider (``EXA_API_KEY``). When the operator\npins the provider to Perplexity, it returns an error and you should\nuse ``web_search`` instead.\n\nSome pages block extraction. When a page returns no content, the\nresult lists it under ``failed_urls`` and the ``content`` field holds\nonly the pages that came back. Check ``failed_urls`` before you\nconclude that a page had nothing useful.",
+      "name": "web_get_contents",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "urls": {
+            "description": "The page URLs to fetch, at most 10 per call. Use complete,\npublic URLs (for example the ones returned by ``web_search``).",
+            "items": {
+              "type": "string"
+            },
+            "title": "Urls",
+            "type": "array"
+          }
+        },
+        "required": [
+          "urls"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "File a vulnerability report — one report per fully-verified finding.\n\n**When to file**: you have a concrete vulnerability with a working\nproof-of-concept and you're 100% sure it's a real issue.\n\n**When NOT to file**:\n\n- General security observations without a specific vulnerability.\n- Suspicions you haven't confirmed with a PoC.\n- Tracking multiple vulnerabilities at once — one report per vuln.\n- Re-reporting something you (or another agent) already filed.\n- Known-CVE dependency / supply-chain findings that can't be\n  dynamically PoC'd — a vulnerable dependency version pinned in a\n  lockfile/manifest that matches a published advisory. File those\n  with ``create_dependency_report`` instead, never with this tool.\n\n**Reporting and severity gate**:\n\n- A reachable endpoint, unusual response, weak configuration, or\n  reconnaissance artifact is not by itself a vulnerability. File a\n  report only when the PoC demonstrates an unauthorized security\n  consequence or a realistic, fully validated path to one.\n- Score only the reasonable final impact supported by the PoC. Do\n  not score speculative pivots or consequences that require another\n  unverified vulnerability.\n- Network reachability and missing authentication affect\n  exploitability; neither creates Confidentiality, Integrity, or\n  Availability impact by itself.\n- Public metadata, internal-looking names or addresses, software\n  versions, intended client-side code, and source maps without\n  secrets or restricted source normally have ``C:N``.\n- Configuration and transport observations require a realistic\n  attacker-controlled exploit and direct security impact. Client\n  errors, compatibility issues, fingerprinting, and attack-surface\n  discovery alone should not be filed as vulnerabilities.\n- Before filing, verify that the impact narrative, PoC, and every\n  non-None CVSS impact metric describe the same demonstrated\n  consequence. When evidence is incomplete, lower the metric or\n  continue validation; never choose a higher value \"to be safe.\"\n\nAutomatic LLM-based **deduplication** rejects reports that describe\nthe same root cause on the same asset as an existing report. If you\nget a ``duplicate_of`` response, do NOT retry — move on to other\nareas. When you have learned something a filed finding does not yet\ncarry, revise that finding with ``update_vulnerability_report``\ninstead of filing this report again.\n\n**Counterevidence pass (required before filing)**: actively build the\nstrongest case that this finding is NOT exploitable, or less severe\nthan you think — then record the result in ``counterevidence``, set\n``confidence`` honestly, and state what would move the severity in\n``severity_change_conditions``. These three fields are mandatory and\nvalidated. A finding you could not execute is at best\n``confidence: medium``, with the gap named in\n``confidence_rationale``.\n\n**Report output rules** (this content may be rendered into generated\nreports):\n\n- No internal/system details: never mention paths like\n  ``/workspace``, internal tools, agents, sandboxes, models, system\n  prompts, internal errors / stack traces, or tester environment.\n  Never leak internal identifiers (proxy request IDs, internal\n  report IDs) into any field.\n- Tone: formal, objective, third-person, vendor-neutral, concise.\n  Avoid internal-guidance headings like \"QUICK\", \"Approach\", or\n  \"Techniques\" that read like an engineering runbook rather than a\n  client deliverable.\n- **Use markdown in every text field**: ``**bold**`` for emphasis,\n  ``inline code`` for identifiers/values/parameters, and\n  language-tagged fenced code blocks for any code/payload/HTTP\n  excerpt. Never leave code bare/unformatted. When referencing a\n  file, annotate the opening fence with\n  ``title=app.py startLineNumber=42 endLineNumber=50`` after the language.\n- Field discipline: ``poc_description`` is steps only — NO code (all\n  code goes in ``poc_script_code``); ``remediation_steps`` is prose\n  only — NO code/diffs (code fixes go in ``code_locations``).\n- Numbered steps allowed only in PoC and Remediation sections.\n- Avoid hedging language; be precise and non-vague.\n- Follow a standard pentest report structure across the fields:\n  (1) overview (``description``), (2) severity & CVSS vector\n  (``cvss_breakdown``), (3) affected asset(s) (``target`` /\n  ``endpoint``), (4) technical details (``technical_analysis``),\n  (5) proof of concept (``poc_description`` + ``poc_script_code``),\n  (6) impact (``impact``), (7) evidence (``evidence``), and\n  (8) remediation (``remediation_steps``).\n\n**White-box requirement**: when source is available, you MUST\npopulate ``code_locations``. See the ``code_locations`` arg below\nfor the full rules around ``fix_before`` / ``fix_after``,\nmulti-part fixes, and informational-vs-actionable entries.\n\n**CVSS breakdown** is an object with all 8 metrics (each a single\nuppercase letter):\n\n- ``attack_vector``: ``N`` (Network), ``A`` (Adjacent), ``L``\n  (Local), ``P`` (Physical)\n- ``attack_complexity``: ``L`` / ``H``\n- ``privileges_required``: ``N`` / ``L`` / ``H``\n- ``user_interaction``: ``N`` / ``R``\n- ``scope``: ``U`` (Unchanged) / ``C`` (Changed)\n- ``confidentiality`` / ``integrity`` / ``availability``: ``N`` /\n  ``L`` / ``H``\n\nDerive the vector from the demonstrated attack, not the finding\ncategory or a scanner/template severity:\n\n- ``C:L`` requires actual access to some restricted information.\n  Reconnaissance value alone is ``C:N``. ``C:H`` requires total\n  disclosure or limited disclosure with a direct serious impact,\n  such as a usable administrator credential or private key.\n- ``I:L`` requires demonstrated unauthorized, limited modification;\n  ``I:H`` requires total or directly serious modification. Otherwise\n  use ``I:N``.\n- ``A:L`` requires demonstrated performance degradation or service\n  interruption; ``A:H`` requires complete or directly serious\n  denial of the affected service. Otherwise use ``A:N``.\n- Use ``S:C`` only when exploitation demonstrably crosses into a\n  component governed by a different security authority. A separate\n  backend, downstream effect, or third-party name is insufficient.\n\nExample::\n\n    {\n        \"attack_vector\": \"N\",\n        \"attack_complexity\": \"L\",\n        \"privileges_required\": \"N\",\n        \"user_interaction\": \"N\",\n        \"scope\": \"U\",\n        \"confidentiality\": \"H\",\n        \"integrity\": \"H\",\n        \"availability\": \"H\"\n    }\n\n**CVSS calibration** — score the weakness you actually proved, not a\nhypothetical worst case. Most over-rating comes from these mistakes:\n\n- **Don't presuppose a separate compromise.** If exploitation\n  requires the attacker to already hold a victim secret (a stolen\n  session cookie/token, a leaked one-time link, intercepted traffic),\n  that acquisition is not free. Do not score it as\n  ``privileges_required:N`` with ``attack_complexity:L`` as if\n  directly reachable, and do not rate a replay-of-captured-secret\n  issue High/Critical unless the *same* finding demonstrates a\n  concrete way to obtain that secret. Issues like a session that\n  survives logout or a replayable link are session-management /\n  defense-in-depth weaknesses — usually Low/Medium on their own.\n- **Reserve ``H`` impact for demonstrated broad impact.** ``C:H`` /\n  ``I:H`` require proof of wide or systemic read/write. A single\n  user's data, a read-only information leak, or merely confirming\n  that an account / domain / software version *exists* (enumeration)\n  is ``C:L`` (often ``I:N``) — not ``C:H``.\n- **Model required position and interaction honestly.** An\n  adversary-in-the-middle prerequisite (e.g. cleartext transmission)\n  or a required victim action is not guaranteed — reflect it in\n  ``attack_complexity`` / ``user_interaction`` instead of assuming the\n  ideal condition always holds.\n\n**CVE / CWE rules**: pass the bare ID only (``CVE-2024-1234``,\n``CWE-89``) — no name, no parenthetical. Be 100% certain; if\nunsure, use ``web_search`` to verify the ID before passing, or omit\nthe field entirely. Always prefer the most specific child CWE over\na broad parent (CWE-89 not CWE-74; CWE-78 not CWE-77). Do NOT use\nbroad/parent CWEs like CWE-74, CWE-20, CWE-200, CWE-284, or\nCWE-693.\n\nCommon CWE references (use the ID only — names are listed here\njust for your lookup):\n\n- **Injection**: CWE-79 XSS, CWE-89 SQLi, CWE-78 OS Command\n  Injection, CWE-94 Code Injection, CWE-77 Command Injection.\n- **Auth / Access**: CWE-287 Improper Authentication, CWE-862\n  Missing Authorization, CWE-863 Incorrect Authorization, CWE-306\n  Missing Auth for Critical Function, CWE-639 Authz Bypass via\n  User-Controlled Key.\n- **Web**: CWE-352 CSRF, CWE-918 SSRF, CWE-601 Open Redirect,\n  CWE-434 Unrestricted File Upload.\n- **Memory**: CWE-787 OOB Write, CWE-125 OOB Read, CWE-416 UAF,\n  CWE-120 Classic Buffer Overflow.\n- **Data**: CWE-502 Deserialization of Untrusted Data, CWE-22\n  Path Traversal, CWE-611 XXE.\n- **Crypto / Config**: CWE-798 Hard-coded Credentials, CWE-327\n  Broken / Risky Crypto, CWE-311 Missing Encryption, CWE-916 Weak\n  Password Hashing.\n\nExample (abbreviated — mirror this structure)::\n\n    title: \"Reflected XSS in /search q parameter\"\n    description:\n        The **`q`** parameter of `/search` reflects user input into\n        the HTML response without encoding, allowing script\n        injection.\n    technical_analysis:\n        The handler interpolates `q` directly into the page body:\n\n        ```python title=views.py startLineNumber=42 endLineNumber=44\n        html = f\"<h2>Results for {q}</h2>\"\n        return HttpResponse(html)\n        ```\n\n        No output encoding is applied, so `<script>` executes.\n    poc_description:\n        1. Navigate to `/search?q=<payload>`.\n        2. Observe the payload executes in the victim's browser.\n    poc_script_code:\n        ```\n        GET /search?q=<script>alert(document.domain)</script>\n        ```\n    evidence:\n        Response echoes the payload verbatim:\n\n        ```html\n        <h2>Results for <script>alert(document.domain)</script></h2>\n        ```\n    assumptions:\n        Assumes a victim can be induced to open a crafted link.\n    remediation_steps:\n        Context-encode all user input rendered into HTML; prefer the\n        template engine's auto-escaping over string interpolation.\n    counterevidence:\n        No output encoding, CSP, or WAF observed on this response;\n        payload executed in a current browser. The parameter is\n        reflected on an unauthenticated route, so no privileged\n        position is required.\n    confidence: \"high\"\n    severity_change_conditions:\n        A restrictive CSP that blocks inline script execution would\n        reduce impact and lower the severity.\n    fix_effort: \"low\"\n\nNice to have: for code findings, if the checkout has git history, a quick\n``git blame`` (quote the paths) on the vulnerable line is worth weaving into\n``technical_analysis`` — who last touched it, when, and in which commit, as\npart of the prose, not a separate section. Skip it if the line is\nuncommitted or the command fails.",
+      "name": "create_vulnerability_report",
+      "parameters": {
+        "properties": {
+          "assumptions": {
+            "description": "Short note on the assumptions/prerequisites that\nmake this finding impactful or exploitable (e.g. \"assumes an\nauthenticated low-privilege user\").",
+            "title": "Assumptions",
+            "type": "string"
+          },
+          "code_locations": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "White-box findings — list of location objects.",
+            "title": "Code Locations"
+          },
+          "confidence": {
+            "description": "REQUIRED. Your calibrated confidence that this is a\nreal, exploitable issue: ``high`` (working PoC against the\nlive target, or a complete reachable source→sink trace),\n``medium`` (strong static evidence you could not fully\nexecute), or ``low`` (plausible with a material unresolved\ngap). Do not inflate — an accurate ``medium`` is more useful\nthan a ``high`` that fails triage.",
+            "title": "Confidence",
+            "type": "string"
+          },
+          "confidence_rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Required when ``confidence`` is not\n``high``. Name the specific gap (e.g. \"static-only trace,\ncould not stand up the service to reproduce\"; \"reachability\nof this route from unauthenticated traffic unconfirmed\").",
+            "title": "Confidence Rationale"
+          },
+          "counterevidence": {
+            "description": "REQUIRED. The strongest case *against* this\nfinding, after actively looking for it — the guard you might\nhave missed, the deployment constraint, the precondition. If\nyou genuinely found nothing, say what you checked (e.g. \"no\ninput validation, WAF, or authorization check found on this\npath; tested authenticated and unauthenticated\"), not just\n\"none\". A generic trust claim (\"the framework escapes this\")\nis not counterevidence unless you confirmed that specific\ncall in this context.",
+            "title": "Counterevidence",
+            "type": "string"
+          },
+          "cve": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "``CVE-YYYY-NNNNN`` if certain, else omit.",
+            "title": "Cve"
+          },
+          "cvss_breakdown": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "8-metric object per the format above.",
+            "title": "Cvss Breakdown",
+            "type": "object"
+          },
+          "cwe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "``CWE-NNN`` (most specific child) if certain, else omit.",
+            "title": "Cwe"
+          },
+          "description": {
+            "description": "Concise, non-technical TL;DR of the vulnerability\n(1-3 sentences) — it appears first in the report. Deep\ntechnical detail and root-cause analysis belong in\n``technical_analysis``, not here.",
+            "title": "Description",
+            "type": "string"
+          },
+          "endpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "API path / Git path (e.g. ``/api/login``).",
+            "title": "Endpoint"
+          },
+          "evidence": {
+            "description": "Concrete proof the issue is real and exploitable —\nrequest/response excerpts, observed behavior, tool output.\nUse fenced code blocks; no internal identifiers/paths.",
+            "title": "Evidence",
+            "type": "string"
+          },
+          "fix_effort": {
+            "description": "One of ``trivial`` / ``low`` / ``medium`` / ``high``.",
+            "title": "Fix Effort",
+            "type": "string"
+          },
+          "fix_pr_body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional. When source is available and you have a\nconcrete fix, a markdown PR-description body proposing the\nfix (summary + rationale). Prose/markdown only — the code\nchange itself belongs in ``code_locations``. Omit for\nblack-box findings.",
+            "title": "Fix Pr Body"
+          },
+          "fix_verification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "REQUIRED whenever any ``code_locations`` entry\ncarries a ``fix_after``. A reviewer can apply that\nsuggestion with one click, so an unverified fix ships\nstraight into the codebase. Before writing this field, work\nthe gates **in order** and never trade an earlier one for a\nlater one:\n\n1. **Security closure** — re-trace the source → sink path\n   through the *patched* code and state why it is now\n   blocked. Re-run the PoC against the fix if you can.\n2. **Bypass review** — re-read the diff *without* leaning on\n   the rationale that produced it. Name the sibling call\n   sites, equivalent sinks, and alternate malicious input\n   classes you checked, and try at least one.\n3. **Preserved behavior** — name the legitimate inputs,\n   public APIs, and error semantics that must keep working,\n   and confirm the patch leaves them intact. A fix that\n   breaks the feature is not a fix.\n4. **Repository checks** — run the narrowest relevant\n   syntax / type / lint / test check that covers the\n   changed lines.\n\nThen write what you did: the commands you ran and their\nresults, and every gate you could only reason about rather\nthan execute, marked explicitly as a gap. Do not claim a\ngate passed because it looks right. If a gate fails, revise\nthe patch or drop ``fix_after`` and leave the location\ninformational — never compensate for a failed security\nclosure with a smaller diff or extra prose.\n\nAlso use this field to record the narrowest-complete-change\njudgement: prefer the smallest repository-native fix that\nfully enforces the invariant, using existing helpers, with\nno unrelated refactors folded in.",
+            "title": "Fix Verification"
+          },
+          "http_exchange_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Proxy request IDs that prove this finding.\nCopy these IDs from ``list_requests`` or ``view_request``.\nFor a finding validated over HTTP, capture and inspect the\nsupporting exchanges and include their IDs here before filing.\nInclude relevant baseline/control requests as well as the exploit.\nOmit only when the finding has no captured HTTP evidence (for\nexample a static-only code finding). Never invent IDs or drop\nthem to bypass a verification error; retry the capture instead.\nIf the result carries a ``warning`` that the IDs were not\nstored, the finding is filed without them: attach them with\n``update_vulnerability_report`` once the proxy responds.\nKeep IDs out of ``evidence`` and all other report text.\n\n**How ``fix_before`` / ``fix_after`` work**: they're used as\nliteral GitHub/GitLab PR suggestion blocks. When a reviewer\naccepts the suggestion, the platform replaces the **exact\nlines from ``start_line`` to ``end_line``** with\n``fix_after``. Therefore:\n\n1. ``fix_before`` must be a **VERBATIM** copy of the source\n   at those lines — same whitespace, indentation, line\n   breaks. If it doesn't match character-for-character, the\n   suggestion will corrupt the code when accepted.\n2. ``fix_after`` is the COMPLETE replacement for that\n   entire block (may be more or fewer lines).\n3. ``start_line`` / ``end_line`` must precisely cover the\n   lines in ``fix_before`` — no more, no less.\n\n**Multi-part fixes**: many fixes touch multiple\nnon-contiguous parts of a file (e.g. add an import at the\ntop AND change code lower down). Since each\n``fix_before`` / ``fix_after`` pair covers ONE contiguous\nblock, create **separate location entries** for each\nnon-contiguous part. Use ``label`` to describe each part's\nrole (``\"Add escape helper import\"``, ``\"Sanitize input\nbefore SQL\"``). Order primary fix first, supporting\nchanges (imports, config) after.\n\n**Informational vs actionable**:\n- With ``fix_before`` / ``fix_after``: actionable fix\n  (renders as a PR suggestion block).\n- Without them: informational context (e.g. showing the\n  source of tainted data, or a sink that doesn't need\n  direct editing).\n\n**Per-location fields**:\n- ``file`` (REQUIRED): path **relative** to repo root. No\n  leading slash, no ``..``, no ``/workspace/`` prefix.\n  Right: ``\"src/db/queries.ts\"``. Wrong:\n  ``\"/workspace/repo/src/db/queries.ts\"``, ``\"./src/x.py\"``,\n  ``\"../../etc/passwd\"``.\n- ``start_line`` (REQUIRED): 1-based; positive integer.\n  Verify against the actual file — do NOT guess.\n- ``end_line`` (REQUIRED): 1-based; ``>= start_line``.\n  Only equal to ``start_line`` when the block truly is one\n  line.\n- ``snippet`` (optional): verbatim source at this range.\n- ``label`` (optional): short role description; especially\n  important for multi-part fixes.\n- ``fix_before`` (optional): verbatim copy of the\n  vulnerable code, lines ``start_line``-``end_line``.\n- ``fix_after`` (optional): complete replacement for that\n  block; syntactically valid.\n\n**Common mistakes to avoid**:\n- Guessing line numbers instead of reading the file.\n- Paraphrasing / reformatting code in ``fix_before``.\n- Setting ``start_line == end_line`` when the vulnerable\n  code spans multiple lines.\n- Bundling an import addition and a far-away code change\n  into one location — split them.\n- Padding ``fix_before`` with surrounding context lines\n  that aren't part of the fix.\n- Duplicating the same change across multiple locations.",
+            "title": "Http Exchange Ids"
+          },
+          "impact": {
+            "description": "The unauthorized result demonstrated by the PoC, the\naffected data or operation, and its scope. Keep plausible\nbut unverified follow-on risks separate; do not use them to\nset CVSS metrics.",
+            "title": "Impact",
+            "type": "string"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "HTTP method when relevant.",
+            "title": "Method"
+          },
+          "poc_description": {
+            "description": "Step-by-step reproduction (steps only, no code).",
+            "title": "Poc Description",
+            "type": "string"
+          },
+          "poc_script_code": {
+            "description": "Working PoC (Python preferred).",
+            "title": "Poc Script Code",
+            "type": "string"
+          },
+          "remediation_steps": {
+            "description": "Specific, actionable fix (prose, no code).",
+            "title": "Remediation Steps",
+            "type": "string"
+          },
+          "severity_change_conditions": {
+            "description": "REQUIRED. One concrete sentence on\nwhat single piece of additional evidence would raise or\nlower the severity (e.g. \"confirmation this route is exposed\nto unauthenticated internet traffic would raise this to\ncritical\").",
+            "title": "Severity Change Conditions",
+            "type": "string"
+          },
+          "target": {
+            "description": "Affected URL / domain / repository.",
+            "title": "Target",
+            "type": "string"
+          },
+          "technical_analysis": {
+            "description": "The mechanism and root cause.",
+            "title": "Technical Analysis",
+            "type": "string"
+          },
+          "title": {
+            "description": "Specific finding title (e.g.\n``\"SQL Injection in /api/users login parameter\"``). Don't\ninclude the CVE number in the title.",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "impact",
+          "target",
+          "technical_analysis",
+          "poc_description",
+          "poc_script_code",
+          "remediation_steps",
+          "evidence",
+          "assumptions",
+          "counterevidence",
+          "confidence",
+          "severity_change_conditions",
+          "fix_effort",
+          "cvss_breakdown"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "File a known-CVE dependency (SCA) finding — one report per CVE x package.\n\nUse this instead of ``create_vulnerability_report`` when the finding\nis a **known-CVE supply-chain issue**: a vulnerable third-party\npackage/version identified from a lockfile, manifest, or SBOM. Unlike\na dynamic finding, you do NOT need to trigger the vulnerability with a\nlive PoC — a verified advisory + the affected installed version is the\nevidence.\n\n**When to file**:\n\n- A dependency is pinned to a version covered by a published CVE.\n- You have verified the CVE ID and the installed version falls in the\n  affected range (use ``web_search`` if unsure).\n\n**When NOT to file**:\n\n- Dynamically-proven vulnerabilities → use\n  ``create_vulnerability_report`` (``finding_class`` dynamic).\n- Outdated-but-not-vulnerable dependencies with no CVE.\n- Re-reporting the same CVE/package already filed.\n\n**Reachability**: do NOT silently downgrade or suppress a finding\nbecause the vulnerable code path is not reached — report it, and record\nthe verdict of the usage analysis in the structured ``reachability`` +\n``reachability_evidence`` fields (see the dependency-cve-scanning skill\nfor the procedure). The verdict answers one question for this advisory\nin this codebase, \"does the vulnerable code run here?\", and the tool\nrejects a report without it or without evidence:\n\n- ``reachable`` — the advisory's vulnerable code executes here:\n  application code, or a package it calls on the application's behalf,\n  calls the affected function, mode or feature.\n- ``not_reachable`` — the package is loaded, but this advisory's\n  vulnerable path does not execute here (no caller of the affected API\n  after a complete search, a call behind a condition that is false here,\n  a parent package that never references the affected API, a mode this\n  code never uses, a triggering argument that is a constant here).\n- ``not_applicable`` — the advisory does not apply to this codebase:\n  nothing the shipped code loads imports the package, it is build or\n  test tooling the artifact never runs, the installed copy is a patched\n  or unaffected build, or the flaw is specific to a platform this code\n  does not run on.\n\nSeverity comes from ``contextual_cvss_breakdown`` when you provide one\n(computed exactly like a normal finding's ``cvss_breakdown``), otherwise\nfrom ``advisory_cvss``. The reachability level alone never changes the\nrating, only prioritization.\n\n**Formatting**: use markdown in text fields (``**bold**``, ``inline\ncode`` for package/version identifiers, fenced code blocks for\nmanifest excerpts). No internal paths/tooling/agent references.",
+      "name": "create_dependency_report",
+      "parameters": {
+        "properties": {
+          "advisory_cvss": {
+            "description": "**Required.** Published advisory base score\n(0.0-10.0) — read it off the advisory (trivy CVSS / NVD / GHSA).\nIt is the published reference the finding is rated against and\nrates the finding whenever you give no contextual breakdown, so\nit must be the real published value; do not guess or omit it.",
+            "title": "Advisory Cvss",
+            "type": "number"
+          },
+          "assumptions": {
+            "description": "Exploitability/reachability assumptions & confidence.",
+            "title": "Assumptions",
+            "type": "string"
+          },
+          "code_locations": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Where application code imports or calls the package —\nthe evidence behind your ``reachability`` claim. List of dicts,\nsame shape as ``create_vulnerability_report``::\n\n    {\"file\": \"src/api/client.ts\", \"start_line\": 14, \"end_line\": 14,\n     \"snippet\": \"const x = require('pkg')\", \"label\": \"imports it\"}\n\nCite the repo-relative ``file`` and the exact 1-based\n``start_line`` where ``snippet`` actually sits — verify against\nthe real file, never guess. A location may also propose\nthe fix itself: ``fix_before`` (verbatim current code, e.g. the\nmanifest pin line) + ``fix_after`` (same lines with the fixed\nversion) — that combination requires ``fix_verification``.",
+            "title": "Code Locations"
+          },
+          "contextual_cvss_breakdown": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "**Required.** Full CVSS v3.1 rating of this\nCVE **in this codebase** — the same 8-metric object as\n``create_vulnerability_report``'s ``cvss_breakdown``:\n``attack_vector`` (N/A/L/P), ``attack_complexity`` (L/H),\n``privileges_required`` (N/L/H), ``user_interaction`` (N/R),\n``scope`` (U/C), ``confidentiality`` / ``integrity`` /\n``availability`` (N/L/H). All 8 metrics are required when the\nfield is set, and the contextual score/vector are computed\nfrom them — you never supply a score. Start from the\nadvisory's published metrics and change only what the\n**source-to-sink trace** you recorded in\n``reachability_evidence`` proves is different here: derive\n``attack_vector`` / ``privileges_required`` /\n``user_interaction`` from what the entry point actually\nrequires, ``attack_complexity`` from the preconditions the\nhops enforce, and the impact metrics from the data and\nprivileges reachable at the sink. When provided, this rating\ndetermines the finding's severity; ``advisory_cvss`` stays as\nthe published reference. Send it on every report: when the\ntrace does not change the published rating, or when you could\nnot complete the trace, repeat the advisory's own metrics and\nadjust only what the usage level itself proves (a package the\ncode never imports is normally ``N`` on all three impact\nmetrics), then say so in the reasoning.",
+            "title": "Contextual Cvss Breakdown"
+          },
+          "contextual_cvss_reasoning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "**Required.** Two to four detailed\nsentences that a reviewer can verify without opening the repo:\nhow the application uses the package, which call sites or\nconfiguration you inspected (repo-relative ``file:line``),\nwhich input reaches the vulnerable code and whether an\nattacker controls it, and what the adjustment therefore\nchanges. State the source-to-sink chain explicitly, hop by\nhop, as ``entry point -> intermediate call -> package call``\nwith a ``file:line`` for each hop. Cite concrete evidence,\nnever a generic statement such as \"low risk\". The user reads\nthis text next to the adjusted score, so an adjustment\nwithout it is discarded.",
+            "title": "Contextual Cvss Reasoning"
+          },
+          "cve": {
+            "description": "``CVE-YYYY-NNNNN`` — required and must be verified.",
+            "title": "Cve",
+            "type": "string"
+          },
+          "cwe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "``CWE-NNN`` (most specific) if certain, else omit.",
+            "title": "Cwe"
+          },
+          "dependency_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The resolution chain from the direct dependency\nto the vulnerable package, joined with `` > `` (e.g.\n``express@4.18.1 > body-parser@1.20.0 > qs@6.10.2``). Omit\nfor direct dependencies.",
+            "title": "Dependency Path"
+          },
+          "description": {
+            "description": "What the CVE is and why the pinned version is affected.",
+            "title": "Description",
+            "type": "string"
+          },
+          "fix_effort": {
+            "default": "low",
+            "description": "One of ``trivial`` / ``low`` / ``medium`` / ``high``\n(dependency upgrades are usually ``trivial``/``low``).",
+            "title": "Fix Effort",
+            "type": "string"
+          },
+          "fix_verification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Required whenever any ``code_locations`` entry\ncarries ``fix_after``. Same bar as a normal finding: security\nclosure, bypass review, preserved behavior, and how each was\nchecked.",
+            "title": "Fix Verification"
+          },
+          "fixed_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "First non-vulnerable version, if known.",
+            "title": "Fixed Version"
+          },
+          "impact": {
+            "description": "What the CVE enables; business risk in this context.",
+            "title": "Impact",
+            "type": "string"
+          },
+          "installed_version": {
+            "description": "The version currently pinned/installed.",
+            "title": "Installed Version",
+            "type": "string"
+          },
+          "introduced_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For a **transitive** dependency, the direct\ndependency (from the project's own manifest) that pulls the\nvulnerable package in, as ``name@version`` (e.g.\n``express@4.18.1``). Omit when the vulnerable package is\nitself a direct dependency.",
+            "title": "Introduced By"
+          },
+          "manifest_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "**Required.** The repo-relative path of the\nlockfile/manifest where the vulnerable version was observed —\ntrivy's ``Target`` (e.g. ``package-lock.json``,\n``services/api/pom.xml``). Strip any scan-workspace or repo\ncheckout directory prefix so the path is relative to the\nrepository root. This binds the finding to its exact file so\nremediation can target the right repository.",
+            "title": "Manifest Path"
+          },
+          "package_ecosystem": {
+            "description": "e.g. ``npm`` / ``pypi`` / ``maven`` / ``go``.",
+            "title": "Package Ecosystem",
+            "type": "string"
+          },
+          "package_name": {
+            "description": "Affected package name (e.g. ``lodash``).",
+            "title": "Package Name",
+            "type": "string"
+          },
+          "reachability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "**Required.** The verdict of the usage analysis for\nthis CVE — ``reachable`` / ``not_reachable`` / ``not_applicable``.\nClaim only what the evidence proves; there is no ``unknown``,\nfinish the analysis before filing.",
+            "title": "Reachability"
+          },
+          "reachability_evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "**Required.** The concrete proof for the\nverdict: repo-relative ``file:line`` of the import and of the\ncall that reaches the affected symbol, the search scope and\nnegative result behind ``not_applicable``, or the condition that\nkeeps the vulnerable path from running behind ``not_reachable``.\nWhenever the affected symbol is called, also give the\n**source-to-sink trace** here: start at the vulnerable package\ncall site and walk backwards hop by hop to the entry point\nthat carries the input (HTTP route, CLI argument, queue\nmessage, webhook, config file), going one step deeper whenever\na hop is a wrapper. Write it as ``entry point -> intermediate\ncall -> package call`` with a ``file:line`` per hop, name what\neach hop enforces (auth, role check, validation, a flag that\nis off in production), and say who controls the input.",
+            "title": "Reachability Evidence"
+          },
+          "remediation_steps": {
+            "description": "How to fix (usually upgrade to a fixed version).",
+            "title": "Remediation Steps",
+            "type": "string"
+          },
+          "target": {
+            "description": "Affected repository / project / manifest.",
+            "title": "Target",
+            "type": "string"
+          },
+          "technical_analysis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional deeper mechanism/root-cause detail.",
+            "title": "Technical Analysis"
+          },
+          "title": {
+            "description": "e.g. ``\"CVE-2024-1234 in lodash 4.17.20 (prototype pollution)\"``.",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "target",
+          "cve",
+          "package_name",
+          "installed_version",
+          "advisory_cvss",
+          "impact",
+          "remediation_steps",
+          "assumptions",
+          "package_ecosystem"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Revise a vulnerability report that is already filed, keeping its id.\n\nUse this when you learn something a filed finding does not yet carry:\n\n- You built the working exploit after filing the finding on static\n  evidence, so the PoC and the confidence change.\n- You chained the finding with another one and the real impact is\n  higher, so the impact narrative and the CVSS vector change.\n- Further testing narrowed or weakened the finding, so the severity\n  must come down.\n- Counterevidence, remediation, or a code location was wrong or\n  incomplete.\n\nThis is not deduplication. You do not need a duplicate verdict to\nrevise your own finding, and you must not file a second report for a\nfinding you can revise. Call ``list_reports`` or ``get_report`` first\nto find the id and read what the report already says.\n\nPass only the fields you want to replace. Every other field stays as\nit is. Reporting rules of ``create_vulnerability_report`` apply to\nevery field you pass, including the markdown and tone rules.\n\nNotes on specific fields:\n\n- ``cvss_breakdown`` replaces the whole vector. The score and the\n  severity are recalculated from it, so pass all 8 metrics. On a\n  dependency finding it replaces the contextual rating and needs\n  ``contextual_cvss_reasoning`` with it. Pass the reasoning alone to\n  correct only the explanation of the rating already on file.\n- A dependency finding never carries ``endpoint``, ``method`` or a PoC.\n  File a proven exploit of the package as its own report.\n- A field that only explains another field is dropped when the field\n  it explains changes and you pass no replacement. Pass\n  ``confidence_rationale`` with a new ``confidence``, and\n  ``severity_change_conditions`` with a new ``cvss_breakdown``.\n- ``code_locations`` replaces the whole list. A location carrying\n  ``fix_after`` needs ``fix_verification``.\n\nThe report keeps its id, its original author, and its filing time. The\nrevision is recorded in the report as update history, so state the\nreason plainly.",
+      "name": "update_vulnerability_report",
+      "parameters": {
+        "properties": {
+          "assumptions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement exploitability prerequisites.",
+            "title": "Assumptions"
+          },
+          "code_locations": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement code locations.",
+            "title": "Code Locations"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "``high`` / ``medium`` / ``low``.",
+            "title": "Confidence"
+          },
+          "confidence_rationale": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The gap behind a confidence below ``high``.",
+            "title": "Confidence Rationale"
+          },
+          "contextual_cvss_reasoning": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Dependency findings only. What you\nobserved in this codebase that justifies the contextual\n``cvss_breakdown``.",
+            "title": "Contextual Cvss Reasoning"
+          },
+          "counterevidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement case against the finding.",
+            "title": "Counterevidence"
+          },
+          "cve": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement CVE id.",
+            "title": "Cve"
+          },
+          "cvss_breakdown": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "All 8 CVSS metrics. Replaces the score and the\nseverity too.",
+            "title": "Cvss Breakdown"
+          },
+          "cwe": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement CWE id.",
+            "title": "Cwe"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement overview.",
+            "title": "Description"
+          },
+          "endpoint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement endpoint.",
+            "title": "Endpoint"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement evidence.",
+            "title": "Evidence"
+          },
+          "fix_effort": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "``trivial`` / ``low`` / ``medium`` / ``high``.",
+            "title": "Fix Effort"
+          },
+          "fix_pr_body": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement fix PR body.",
+            "title": "Fix Pr Body"
+          },
+          "fix_verification": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Verification statement for an applyable fix.",
+            "title": "Fix Verification"
+          },
+          "http_exchange_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement proxy request ids. Pass an empty\nlist to remove all linked exchanges.",
+            "title": "Http Exchange Ids"
+          },
+          "impact": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement impact narrative.",
+            "title": "Impact"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement HTTP method.",
+            "title": "Method"
+          },
+          "poc_description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement PoC steps (no code).",
+            "title": "Poc Description"
+          },
+          "poc_script_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement exploit script or payload.",
+            "title": "Poc Script Code"
+          },
+          "remediation_steps": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement remediation prose (no code).",
+            "title": "Remediation Steps"
+          },
+          "report_id": {
+            "description": "Id of the report to revise (format ``vuln-NNNN``).",
+            "title": "Report Id",
+            "type": "string"
+          },
+          "severity_change_conditions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "What would move the severity now.",
+            "title": "Severity Change Conditions"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement affected asset.",
+            "title": "Target"
+          },
+          "technical_analysis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement technical details.",
+            "title": "Technical Analysis"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Replacement title.",
+            "title": "Title"
+          },
+          "update_reason": {
+            "description": "What you learned that the report does not yet\ncarry, in one or two sentences.",
+            "title": "Update Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id",
+          "update_reason"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Withdraw a vulnerability report that later testing disproved.\n\nUse this when a finding you filed turns out not to be a vulnerability\nat all: the exploit only worked because of a mistake in your own test\nsetup (a mixed-up session, a self-inflicted state change, a misread\nresponse), the behaviour is documented and intended, or the control\nyou believed was missing is in fact enforced. The report is removed\nfrom the scan; it does not stay behind as a zero-severity entry.\n\nDo NOT use this for a finding that is real but weaker than filed —\nrevise it with ``update_vulnerability_report`` so the severity, the\nimpact and the counterevidence come down together. Do NOT rewrite a\nreport into a \"retracted\" or \"false positive\" note either: delete it.\n\nOnly withdraw a report you have re-tested yourself, whoever filed it.\nCall ``get_report`` first to read what it claims, then state in\n``delete_reason`` exactly what disproved it, so the scan history shows\nwho withdrew the finding and why. A withdrawn report cannot be restored; if new\nevidence later proves the issue, file it again.",
+      "name": "delete_vulnerability_report",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "delete_reason": {
+            "description": "What disproved the finding, in one or two\nsentences.",
+            "title": "Delete Reason",
+            "type": "string"
+          },
+          "report_id": {
+            "description": "Id of the report to withdraw (format ``vuln-NNNN``).",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id",
+          "delete_reason"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "List vulnerability reports filed so far in this scan — metadata-first.\n\n**For the orchestrator / root agent.** This is an orchestration tool\nfor tracking scan-wide coverage and assembling the final report — leaf\n/ specialist agents do their own testing and file findings; they should\nNOT call this. If you are a subagent, ignore it and focus on your task.\n\nReports are shared across **every** agent in the scan, so this returns\nfindings filed by any agent (root or child), not just your own. As the\nroot agent, use it to track progress, avoid dispatching work on\nalready-covered ground, reason about attack-chaining across confirmed\nfindings, and build the ``finish_scan`` executive summary.\n\nBy default each entry is compact: ``id``, ``title``, ``severity``,\n``cvss``, ``confidence``, ``finding_class``, ``cve`` / ``cwe``,\n``target`` / ``endpoint``, ``fix_effort``, ``agent_name`` (who filed it), ``timestamp``,\nplus a 280-char ``description_preview``. Entries you filed yourself are\nflagged ``by_you: true``. The response also carries\n``total_count`` and ``severity_counts`` (counts per severity across all\nreports, ignoring filters). Set ``include_details=True`` for full report\nbodies (PoC, evidence, remediation, code_locations) — token-expensive;\nprefer ``get_report`` to drill into a single finding.\n\nFilters compose (all must match): ``severity`` and ``finding_class``\nmatch exactly, ``target`` is a substring match against target/endpoint,\nand ``search`` is a substring match against title/description. Results\nare ordered by severity (critical -> info), then report id.\n\nThis is read-only — it never files or dedupes anything.",
+      "name": "list_reports",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "finding_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter to ``dynamic`` (PoC-backed) or\n``dependency_cve`` (known-CVE supply-chain).",
+            "title": "Finding Class"
+          },
+          "include_details": {
+            "default": false,
+            "description": "When False (default) entries are compact; when\nTrue full report bodies are returned.",
+            "title": "Include Details",
+            "type": "boolean"
+          },
+          "search": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Substring match against title and description.",
+            "title": "Search"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Filter to one of ``critical`` / ``high`` / ``medium`` /\n``low`` / ``info`` / ``none``.",
+            "title": "Severity"
+          },
+          "target": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Substring match against a report's target / endpoint.",
+            "title": "Target"
+          }
+        },
+        "required": [
+          "severity",
+          "finding_class",
+          "target",
+          "search",
+          "include_details"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Fetch one vulnerability report by its id (e.g. ``vuln-0001``).\n\nReturns the full report body — description, impact, technical analysis,\nPoC, evidence, remediation, CVSS breakdown, and any ``code_locations``.\nUse ``list_reports`` first to find ids; this is the cheap way to read a\nsingle finding in full without pulling every body.\n\nRead-only.",
+      "name": "get_report",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "report_id": {
+            "description": "Report id from ``list_reports`` or a\n``create_vulnerability_report`` / ``create_dependency_report``\nresponse (format ``vuln-NNNN``).",
+            "title": "Report Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "report_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "List captured HTTP requests from the Caido proxy, filtered with HTTPQL.\n\nHTTPQL grammar: a clause is ``namespace.field.operator:value`` with no\nwhitespace inside the clause. Clauses combine with ``AND`` / ``OR``\n(case-insensitive) and parentheses. There is no ``NOT``, ``&&`` or\n``||``; negate with ``ne``, ``ncont``, ``nlike``, ``nregex``.\n\nFields:\n\n- ``req``: ``method``, ``host``, ``path``, ``query``, ``ext``, ``raw``\n  (string); ``port``, ``len`` (integer); ``created_at`` (date);\n  ``tls`` (boolean).\n- ``resp``: ``code``, ``len``, ``roundtrip`` (integer); ``raw``\n  (string).\n- ``row.id`` (integer).\n- No other field exists in the bundled Caido: no ``req.url``,\n  ``resp.status``, ``req.header`` or ``req.body``. Match headers and\n  bodies through ``req.raw`` / ``resp.raw``.\n\nOperators and values:\n\n- Integer: ``eq``, ``ne``, ``gt``, ``gte``, ``lt``, ``lte`` with a bare\n  number: ``resp.code.eq:200``, ``resp.len.gt:1000``, ``row.id.eq:413``.\n- String: ``eq``, ``ne``, ``cont``, ``ncont``, ``like``, ``nlike``,\n  ``regex``, ``nregex`` with a double-quoted value:\n  ``req.method.eq:\"POST\"``, ``req.path.cont:\"/api/\"``,\n  ``req.ext.nlike:\"%.js\"``. ``cont`` is case-insensitive; ``eq`` and\n  ``like`` are case-sensitive; ``like`` uses SQLite ``%`` / ``_``\n  wildcards. ``req.ext`` includes the dot: ``req.ext.eq:\".js\"``.\n- Regex: write the pattern between slashes, escaping ``/``:\n  ``req.host.regex:/.*\\.example\\.com/``,\n  ``req.path.regex:/\\/api\\/v\\d+/``. In a double-quoted regex every\n  backslash is doubled (JSON escaping): ``req.host.regex:\"\\\\.example\\\\.com\"``.\n  Rust regex syntax, no lookaround.\n- Date (``req.created_at``): ``gt`` / ``lt`` only, with a quoted\n  ISO 8601 / RFC 3339 value: ``req.created_at.gt:\"2024-01-01T00:00:00Z\"``.\n- Boolean (``req.tls``): ``eq`` / ``ne`` with bare ``true`` / ``false``.\n- ``source:\"intercept\"`` (also ``\"replay\"``, ``\"automate\"``,\n  ``\"workflow\"``, ``\"plugin\"``) and ``preset:\"name\"`` take a quoted value.\n- A bare quoted string searches ``req.raw`` and ``resp.raw``:\n  ``\"password\" OR \"api_key\"``.\n\nExamples: ``req.host.eq:\"example.com\" AND req.path.cont:\"/api/\"``;\n``req.method.eq:\"POST\" AND resp.code.gte:400``;\n``req.path.ncont:\"/static\"``;\n``(req.ext.eq:\".js\" OR req.ext.eq:\".map\") AND resp.code.eq:200``.\n\nCaido answers a malformed filter with ``Invalid HTTPQL query`` and\nreturns no requests. Fix the clause and call again. Usual causes: a\nquoted integer (``resp.code.eq:\"200\"``), an unquoted string\n(``req.method.eq:POST``), single quotes, ``NOT``, ``&&``, a field that\ndoes not exist, or ``gte`` / ``lte`` on ``created_at``.\n\nFor sitemap-style tree traversal, drill into a host with\n``req.host.eq:\"example.com\"`` then narrow with ``req.path.cont:\"/api/\"``.\n\nPagination is cursor-based. Pass the ``end_cursor`` from the\n``page_info`` of one call as ``after`` to the next.",
+      "name": "list_requests",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "after": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cursor from a previous response's ``page_info.end_cursor``.",
+            "title": "After"
+          },
+          "first": {
+            "default": 50,
+            "description": "Number of entries to return (default 50).",
+            "title": "First",
+            "type": "integer"
+          },
+          "httpql_filter": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Caido HTTPQL query (optional).",
+            "title": "Httpql Filter"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Restrict to a Caido scope (managed via ``scope_rules``).",
+            "title": "Scope Id"
+          },
+          "sort_by": {
+            "default": "timestamp",
+            "description": "One of ``timestamp`` / ``host`` / ``method`` / ``path``\n/ ``status_code`` / ``response_time`` / ``response_size``\n/ ``source``.",
+            "enum": [
+              "timestamp",
+              "host",
+              "method",
+              "path",
+              "status_code",
+              "response_time",
+              "response_size",
+              "source"
+            ],
+            "title": "Sort By",
+            "type": "string"
+          },
+          "sort_order": {
+            "default": "desc",
+            "description": "``asc`` or ``desc``.",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "title": "Sort Order",
+            "type": "string"
+          }
+        },
+        "required": [
+          "httpql_filter",
+          "first",
+          "after",
+          "sort_by",
+          "sort_order",
+          "scope_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "View a captured request or its response, optionally regex-searched.\n\nTwo modes:\n\n- **With** ``search_pattern`` (compact regex hits) — returns up to 20\n  matches with ``before`` / ``after`` context and position. Useful\n  for hunting reflected input, leaked URLs, hidden parameters.\n- **Without** ``search_pattern`` (full content with line pagination)\n  — returns the page of raw content plus ``has_more`` flag.\n\nCommon search patterns:\n\n- API endpoints: ``/api/[a-zA-Z0-9._/-]+``\n- URLs: ``https?://[^\\s<>\"']+``\n- Query parameters: ``[?&][a-zA-Z0-9_]+=([^&\\s<>\"']+)``\n- Specific input reflection: search for the value you submitted.",
+      "name": "view_request",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "page": {
+            "default": 1,
+            "description": "1-indexed page number (only when no ``search_pattern``).",
+            "title": "Page",
+            "type": "integer"
+          },
+          "page_size": {
+            "default": 50,
+            "description": "Lines per page.",
+            "title": "Page Size",
+            "type": "integer"
+          },
+          "part": {
+            "default": "request",
+            "description": "``\"request\"`` or ``\"response\"``.",
+            "enum": [
+              "request",
+              "response"
+            ],
+            "title": "Part",
+            "type": "string"
+          },
+          "request_id": {
+            "description": "Request ID from ``list_requests``.",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "search_pattern": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional regex; switches the response shape to\ncompact hits.",
+            "title": "Search Pattern"
+          }
+        },
+        "required": [
+          "request_id",
+          "part",
+          "search_pattern",
+          "page",
+          "page_size"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Repeat a captured request, optionally patching individual fields.\n\nThe standard pentesting workflow with this tool:\n\n1. ``agent-browser`` (via ``exec_command``) or live target traffic\n   → request gets captured by Caido.\n2. ``list_requests`` → find the request ID you want to manipulate.\n3. ``repeat_request`` → send a modified version (auth-bypass test,\n   payload injection, parameter tampering).\n\nMirrors the manual \"browse → capture → modify → test\" flow used in\nreal pentesting. Inherits everything from the original request\n(headers, cookies, auth, method, URL) and overlays only the fields\nyou specify in ``modifications``.",
+      "name": "repeat_request",
+      "parameters": {
+        "properties": {
+          "modifications": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Patch dict. Recognized keys:\n\n- ``url`` — replace the URL.\n- ``params`` — dict of query-string keys to add/update.\n- ``headers`` — dict of headers to add/update.\n- ``body`` — replace the body string entirely.\n- ``cookies`` — dict of cookies to add/update.",
+            "title": "Modifications"
+          },
+          "request_id": {
+            "description": "ID of the original request (from ``list_requests``).",
+            "title": "Request Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Browse Caido's hierarchical sitemap of proxied traffic.\n\nCaido aggregates every captured request into a tree:\n``DOMAIN`` → ``DIRECTORY`` (path segments) → ``REQUEST`` →\n``REQUEST_BODY`` / ``REQUEST_QUERY`` (variant per body/query shape).\nUse this to understand the discovered attack surface, locate\npromising directories, and pick endpoints worth deeper testing.\n\nWorkflow:\n- Start with no ``parent_id`` to list root domains (scoped by\n  ``scope_id`` if you only care about in-scope hosts).\n- Pick an entry where ``has_descendants=true`` and pass its ``id``\n  as ``parent_id`` to drill in. ``depth=\"DIRECT\"`` returns only\n  immediate children; ``\"ALL\"`` flattens the full subtree.\n- Hand any ``id`` to ``view_sitemap_entry`` for the full record\n  and recent matching requests.",
+      "name": "list_sitemap",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "depth": {
+            "default": "DIRECT",
+            "description": "``\"DIRECT\"`` (immediate children) or ``\"ALL\"``\n(recursive subtree). Only meaningful with ``parent_id``.",
+            "enum": [
+              "DIRECT",
+              "ALL"
+            ],
+            "title": "Depth",
+            "type": "string"
+          },
+          "page": {
+            "default": 1,
+            "description": "1-indexed page (30 entries per page).",
+            "title": "Page",
+            "type": "integer"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Entry ID to expand; omit for root domains.",
+            "title": "Parent Id"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Limit roots to a Caido scope (only used when\n``parent_id`` is omitted). Manage scopes via ``scope_rules``.",
+            "title": "Scope Id"
+          }
+        },
+        "required": [
+          "scope_id",
+          "parent_id",
+          "depth",
+          "page"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Get full detail for a sitemap entry plus its recent requests.\n\nReturns the entry's metadata, the primary request shape\n(method/path/response if any), and the most recent 30 related\nrequests that fall under this entry. Pair with ``list_sitemap`` to\npick the ``entry_id``.",
+      "name": "view_sitemap_entry",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "entry_id": {
+            "description": "ID from ``list_sitemap`` (or any nested entry).",
+            "title": "Entry Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "entry_id"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "CRUD on Caido scope rules (allow/deny patterns).\n\nScopes filter which traffic Caido tools see. Use them to focus on a\ntarget, exclude noisy assets (CDNs, static files), or define a\nbug-bounty allowlist.\n\nPattern semantics:\n\n- Glob wildcards: ``*`` (any), ``?`` (single), ``[abc]`` (one of),\n  ``[a-z]`` (range), ``[^abc]`` (none of).\n- **Empty allowlist = allow all domains.**\n- **Denylist always overrides allowlist.**\n\nCommon denylist for noisy static assets:\n``[\"*.gif\", \"*.jpg\", \"*.png\", \"*.css\", \"*.js\", \"*.ico\", \"*.svg\",\n\"*woff*\", \"*.ttf\"]``.\n\nEach scope has a unique id usable as ``scope_id`` in\n``list_requests``.",
+      "name": "scope_rules",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "description": "\n\n- ``list`` — return all scopes.\n- ``get`` — single scope by ``scope_id``.\n- ``create`` — needs ``scope_name``, optionally\n  ``allowlist`` / ``denylist``.\n- ``update`` — needs ``scope_id`` + ``scope_name``;\n  allowlist / denylist replace the previous values.\n- ``delete`` — needs ``scope_id``.",
+            "enum": [
+              "get",
+              "list",
+              "create",
+              "update",
+              "delete"
+            ],
+            "title": "Action",
+            "type": "string"
+          },
+          "allowlist": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Domain patterns to include (e.g.\n``[\"*.example.com\", \"api.test.com\"]``).",
+            "title": "Allowlist"
+          },
+          "denylist": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Patterns to exclude.",
+            "title": "Denylist"
+          },
+          "scope_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required for ``get`` / ``update`` / ``delete``.",
+            "title": "Scope Id"
+          },
+          "scope_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Required for ``create`` / ``update``.",
+            "title": "Scope Name"
+          }
+        },
+        "required": [
+          "action",
+          "allowlist",
+          "denylist",
+          "scope_id",
+          "scope_name"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "List available MCP connections, loading each connection's catalog on first use.\n\nRead-only. Returns one entry per connection with its ``id`` (the exact name\nyou pass to the other MCP tools), ``name``, ``description``, and\n``tool_count`` (null while the catalog is unknown). Waits at most 30 seconds\nfor catalogs; unfinished catalogs keep loading in the background.\nThe response does not include tool schemas. Call\n``search_mcp_tools`` next. Then call ``get_mcp_tool_schema`` for one selected\ntool before you call ``call_mcp``. Returns an empty ``connections`` list when\nthe run has no MCP connections.",
+      "name": "list_mcps",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Search one connection's tools without returning their full schemas.\n\nThe first search lazily connects the provider and caches its catalog. Results\ncontain only names, short descriptions, and whether each tool is in the\nscan's active set. Call ``get_mcp_tool_schema`` for the selected tool.\nCatalogs that fit the limit include non-matching tools after matches. When\nnothing matches, results fall back to active tools first, then name order.",
+      "name": "search_mcp_tools",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "connection": {
+            "description": "The connection name exactly as reported by ``list_mcps``.",
+            "title": "Connection",
+            "type": "string"
+          },
+          "limit": {
+            "default": 8,
+            "description": "Maximum candidates to return, from 1 through 20.",
+            "title": "Limit",
+            "type": "integer"
+          },
+          "query": {
+            "description": "Capability words such as ``page content`` or ``workspace identity``.",
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection",
+          "query",
+          "limit"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Return one MCP tool's exact input schema.",
+      "name": "get_mcp_tool_schema",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "connection": {
+            "description": "The connection name exactly as reported by ``list_mcps``.",
+            "title": "Connection",
+            "type": "string"
+          },
+          "tool": {
+            "description": "One exact tool name returned by ``search_mcp_tools``.",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection",
+          "tool"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Return one connection's full tool catalog as a compatibility fallback.\n\nRead-only. This result can be large because it includes every tool schema.\nFirst use ``search_mcp_tools`` and ``get_mcp_tool_schema``. Use this fallback\nonly when targeted search cannot identify an expected tool. Nothing is read\nfrom the connected account.",
+      "name": "describe_mcp",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "connection": {
+            "description": "The connection name exactly as reported by ``list_mcps``.",
+            "title": "Connection",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Call one tool on one MCP connection and return its result.\n\nUse the connection id from ``list_mcps``. Use the tool name from\n``search_mcp_tools``. Pass an object that matches the schema from\n``get_mcp_tool_schema``. Omit the arguments for a tool that takes no\narguments.",
+      "name": "call_mcp",
+      "parameters": {
+        "properties": {
+          "arguments": {
+            "default": null,
+            "description": "The tool's arguments as a JSON object of names to values (for\nexample ``{\"path\": \"app.py\"}``), or omitted/empty for a tool that\ntakes none. Pass an object, not a stringified object. Match the shape\nthat ``get_mcp_tool_schema`` returned.",
+            "title": "Arguments"
+          },
+          "connection": {
+            "description": "The connection name exactly as reported by ``list_mcps``.",
+            "title": "Connection",
+            "type": "string"
+          },
+          "tool": {
+            "description": "The tool name exactly as reported by ``search_mcp_tools``.",
+            "title": "Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection",
+          "tool"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Print the multi-agent tree — every agent, its parent, its status.\n\nUse before spawning a new agent (don't duplicate work — check whether\nsomething specialized for that task already exists) and any time you\nwant a snapshot of who's still ``running`` / ``waiting`` /\n``completed`` / ``crashed`` / ``stopped``. Output is an indented\nbullet list with status in brackets; the agent that called this tool\nis marked ``← you``.",
+      "name": "view_agent_graph",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {},
+        "required": [],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Send a message to another agent's inbox — sparingly.\n\nInter-agent messages are appended to the target's SDK session and\ninterrupt any active target turn so the next run cycle sees them.\nUse only when essential:\n\n- Sharing a discovered finding/credential another agent needs.\n- Asking a specialist a focused question.\n- Coordinating who covers what (avoid overlap).\n- Telling a child to wrap up or change course.\n\n**Don't** use for routine \"hello/status\" pings, for context the\ntarget already has (children inherit parent history), or when\nparent/child completion via ``agent_finish`` already covers the\nflow. In interactive runs a message wakes the target regardless of\nstatus, so a follow-up can restart a completed/stopped/failed agent.\nIn non-interactive runs a finished agent is gone for good: the call\nfails with the target's status, and you should read its filed\nreports (``list_reports``) or spawn a new agent instead of waiting.",
+      "name": "send_message_to_agent",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "description": "The full message body. Be specific — include payloads,\nURLs, or what you want them to do, not just headlines.",
+            "title": "Message",
+            "type": "string"
+          },
+          "message_type": {
+            "default": "information",
+            "description": "``query`` (you want a reply), ``instruction``\n(you're directing them), ``information`` (FYI, no reply\nexpected). Default ``information``.",
+            "enum": [
+              "query",
+              "instruction",
+              "information"
+            ],
+            "title": "Message Type",
+            "type": "string"
+          },
+          "priority": {
+            "default": "normal",
+            "description": "``low`` / ``normal`` / ``high`` / ``urgent``.",
+            "enum": [
+              "low",
+              "normal",
+              "high",
+              "urgent"
+            ],
+            "title": "Priority",
+            "type": "string"
+          },
+          "target_agent_id": {
+            "description": "Recipient's 8-char id.",
+            "title": "Target Agent Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_agent_id",
+          "message",
+          "message_type",
+          "priority"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Pause until another AGENT messages you (or the timeout elapses).\n\nUse when you have nothing useful to do until a child or peer\nresponds — typically after spawning subagents and you want their\ncompletion reports. You resume the instant any message arrives, so\nsize ``timeout_seconds`` to the work you're awaiting.\n\n**Issue exactly one wait, then stop and react to what it returns.**\nThis call blocks and resumes on its own; it is not a poll you repeat.\nDo not write out a wait/check loop ahead of time — a second wait in\nthe same turn returns immediately without waiting.\n\n**This tool is only for waiting on other agents.** Two things it is\nNOT for:\n\n- **Waiting for the user.** Write your reply as plain text, then call\n  ``wait_for_user`` to hand control back.\n- **Waiting for a long-running command.** This tool does not watch\n  processes at all — it sleeps until a *message* arrives, so it\n  burns the full timeout even if your command finished a second\n  later. Poll the process instead: ``exec_command`` returns a\n  session/process id, and ``write_stdin`` with ``chars=\"\"`` returns\n  as soon as there is new output or the process exits.\n\n**Critical caveats:**\n\n- **Never** call this if you have no agents left to hear from —\n  that just strands you until the timeout. Call ``finish_scan``\n  (root) or ``agent_finish`` (subagent) instead.\n- If you're waiting on an agent that **isn't your child**, message\n  it first asking it to ping you when done — otherwise it has no\n  reason to send to your inbox and you'll wait the full timeout.\n- Children update the parent automatically via ``agent_finish``\n  → no extra coordination needed.",
+      "name": "wait_for_agents",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "default": "Waiting for messages from other agents",
+            "description": "One-line note shown in graph snapshots while you're\nwaiting (helps a human or sibling agent debug who's stuck\non what).",
+            "title": "Reason",
+            "type": "string"
+          },
+          "timeout_seconds": {
+            "default": 300,
+            "description": "Max seconds to wait (default 300, and values above\nthat are cut short by a hard ceiling). This is only\na cap — the tool returns the INSTANT a message arrives, so a\nlarger value never makes you wait longer when the reply does\ncome. Right-size it to what you're waiting on: a short wait\n(e.g. 10-60s) for a quick ack or a small/fast subtask, and a\nlonger one (e.g. ~100-200s) only for genuinely long-running\nwork (deep recon, exploitation, a full sub-scan). The cap only\nbites when the expected message never arrives — so an oversized\ntimeout on a trivial wait just strands you idle until it\nelapses. On timeout the tool returns and you decide whether to\nkeep working or wait again.",
+            "title": "Timeout Seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "reason",
+          "timeout_seconds"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Spawn a specialist child agent to run in parallel.\n\nDecompose complex pentests by handing focused subtasks to dedicated\nchildren. The child runs asynchronously — the parent continues\nimmediately and can ``wait_for_agents`` later (or just keep\nworking in parallel). When the child calls ``agent_finish``, its\ncompletion report lands in the parent's inbox.\n\n**Before spawning, call ``view_agent_graph``** to confirm no\nexisting agent already covers this scope — duplicate specialists\nwaste turns and create coordination headaches.\n\n**Specialization principles:**\n\n- Most agents need at least one ``skill`` to be useful.\n- Aim for **1-3 related skills** per agent. Up to 5 only when the\n  task genuinely spans them.\n- One skill = most focused (e.g., XSS-only). Five skills = upper\n  bound.\n- Match the ``name`` to the focus (``XSS Specialist``,\n  ``SQLi Validator``, ``Auth Specialist``).\n\n**When to spawn vs do it yourself:**\n\n- Spawn when the subtask is large, parallelizable, or needs\n  different specialization than what you're already doing.\n- Don't spawn for trivial one-shot probes — just run the tool\n  yourself.",
+      "name": "create_agent",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "inherit_context": {
+            "default": true,
+            "description": "Default ``True``. The child receives the\nparent's input history as background; only set ``False``\nwhen starting a clean-slate task.",
+            "title": "Inherit Context",
+            "type": "boolean"
+          },
+          "name": {
+            "description": "Human-readable child name (used in graph views and\n``send_message_to_agent`` flows).",
+            "title": "Name",
+            "type": "string"
+          },
+          "skills": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "List of skill names (e.g. ``[\"xss\", \"sql_injection\"]``).\nMax 5; prefer 1-3.",
+            "title": "Skills"
+          },
+          "task": {
+            "description": "Specific objective. Be concrete — what to test, what\nsuccess looks like, any constraints. Name the target the\nchild should call ``get_threat_model`` on, and any shared\nstate it should build on rather than rediscover — what\nrecon already mapped, which surfaces are already covered.\nA child that is not told what is already known repeats it.",
+            "title": "Task",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "task",
+          "inherit_context",
+          "skills"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "description": "Gracefully stop a running agent (and optionally its descendants).\n\nUses the SDK's ``RunResultStreaming.cancel(mode=\"after_turn\")`` so the\ntarget's current turn finishes — including saving items to its\nsession — before the run loop honors the cancel. The agent's\ninteractive outer loop parks as ``stopped``; later user/peer\nmessages can wake it again.\n\nUse sparingly. Prefer ``send_message_to_agent`` (asking the agent\nto wrap up) for soft-stop scenarios. Reach for ``stop_agent`` when\na child has gone off-track and won't self-correct.",
+      "name": "stop_agent",
+      "parameters": {
+        "additionalProperties": false,
+        "properties": {
+          "cascade": {
+            "default": true,
+            "description": "If ``True`` (default), also stop every descendant of\n``target_agent_id`` leaves-first. ``False`` stops only the\ntarget.",
+            "title": "Cascade",
+            "type": "boolean"
+          },
+          "reason": {
+            "default": "",
+            "description": "Optional human-readable reason for the stop, surfaced\nin logs and telemetry.",
+            "title": "Reason",
+            "type": "string"
+          },
+          "target_agent_id": {
+            "description": "The 8-char id from ``view_agent_graph`` /\n``create_agent``. Cannot stop yourself.",
+            "title": "Target Agent Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_agent_id",
+          "cascade",
+          "reason"
+        ],
+        "type": "object"
+      }
+    }
+  ]
+}
